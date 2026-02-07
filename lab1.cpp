@@ -353,11 +353,17 @@ int main()
         Rect r;
         r.showLRTB();
         
+        cout << endl;
+
         r.inflate(5);
         r.showLRTB();
 
+        cout << endl;
+
         r.inflate(3, 4);
         r.showLRTB();
+
+        cout << endl;
 
         r.inflate(-2, 5, 4, -3);
         r.showLRTB();
@@ -377,11 +383,8 @@ int main()
      */
 
     {
-        Rect r1;
-        r1.inflate(4);
-
-        Rect r2;
-        r2.inflate(-5, 7, 9, 0);
+        Rect r1(4, 8, 8, 4);
+        Rect r2(-5, 7, 9, 0);
 
         Rect r3 = bounding_rect(r1, r2);
         print_rect(r3);

@@ -16,27 +16,39 @@ Rect bounding_rect(Rect r1, Rect r2) {
 }
 
 void print_rect(Rect &r) {
-    int width = mod(r.get_right() - r.get_left());
-    int hight = mod(r.get_top() - r.get_bottom());
+    int width = mod( (r.get_right() - r.get_left()) );
+    int hight = mod( (r.get_top() - r.get_bottom()) );
 
-    if (width > 1) { int widthWithOutBorders = width-1; }
-    else {}int widthWithOutBorders = width-2;
+    int widthWithOutBorders = 0;
+    int hightWithOutBorders = 0;
+    if (width > 1 && hight > 1) { 
+        widthWithOutBorders = width-1; 
+        hightWithOutBorders = hight-2;
+    }
+    else {
+        cout << "Something strange.." << endl;
+        return;
+    }
 
     for (int i=0; i<width; i++) {
-        cout << '_';
+        cout << "—";
     }
 
     cout << endl;
 
-    for (int i=0; i<(hight-2); i++) {
-        cout << '|' << widthWithOutBorders * ' ' <<  '|' << endl;
+    for (int i=0; i<hightWithOutBorders; i++) {
+        cout << '|';
+        for (int j=0; j< widthWithOutBorders; j++) {
+            cout << ' ';
+        }
+        cout << '|' << endl;
+    }
+
+    for (int i=0; i<width; i++) {
+        cout << "—";
     }
 
     cout << endl;
-
-    for (int i=0; i<width; i++) {
-        cout << '_';
-    }
 }
 
 int mod(int number) {
@@ -96,7 +108,9 @@ void Rect::showLRTB() {
 
 Rect::Rect(int m_leftBorder, int m_rightBorder, int m_topBorder, int m_bottomBorder) {
             
-            cout << "The constructor with parameters is called: " << this << endl;
+            #ifndef NDEBUG
+                cout << "The constructor with parameters is called: " << this << endl;
+            #endif
 
             this->m_leftBorder = m_leftBorder;
             this->m_rightBorder = m_rightBorder;
@@ -106,7 +120,9 @@ Rect::Rect(int m_leftBorder, int m_rightBorder, int m_topBorder, int m_bottomBor
 
 Rect::Rect() {
 
-            cout << "Explicit default constructor called: " << this << endl;
+            #ifndef NDEBUG
+                cout << "Explicit default constructor called: " << this << endl;
+            #endif
 
             m_leftBorder = 0;
             m_rightBorder = 0;
@@ -114,10 +130,19 @@ Rect::Rect() {
             m_bottomBorder = 0;
         }
 
-Rect::Rect(const Rect& other) {
-            cout << "Copy constructor 'called by the compiler': " << this << endl;
+Rect::Rect(const Rect& other) 
+        : m_leftBorder(other.m_leftBorder),
+            m_rightBorder(other.m_rightBorder),
+            m_topBorder(other.m_topBorder),
+            m_bottomBorder(other.m_bottomBorder)
+    {
+            #ifndef NDEBUG
+                cout << "Copy constructor 'called by the compiler': " << this << endl;
+            #endif
         }
 
 Rect::~Rect() {
-            cout << "The destructor has been called" << endl;
+            #ifndef NDEBUG
+                cout << "The destructor has been called" << endl;
+            #endif
         }
