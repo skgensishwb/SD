@@ -232,7 +232,7 @@ int main()
         /*
             The destructor has been called (pR на delete)
             The destructor has been called (r1 на фигурной скобке ниже)
-            
+
             The destructor has been called (r3 на завершении программы)
         */
 
@@ -252,8 +252,11 @@ int main()
 
     /* {
         Rect r1;
-        std::cout << r1.<имя_поля> << std::endl;
+        std::cout << r1.m_leftBorder << std::endl;
     } */
+
+    // error: ‘float Rect::m_leftBorder’ is private within this context
+    // переменные/методы класса недоступны вне класса
 
     /**
      * Задание 1.8. Инкапсуляция. Методы для доступа к объектам класса.
@@ -301,12 +304,14 @@ int main()
      * Продемонстрируйте работу этих методов ниже.
      */
 
-    /* {
-       Rect r;
-       std::cout << r.get_left() << "; " << r.get_right() << '\n';
-       r.set_all(1, 2, 3, 4);
-       std::cout << r.get_top() << "; " << r.get_bottom() << '\n';
-    } */
+    {
+        cout << endl;
+
+        Rect r;
+        cout << r.get_left() << "; " << r.get_right() << endl;
+        r.set_all(1, 2, 3, 4);
+        cout << r.get_top() << "; " << r.get_bottom() << endl;
+    }
 
     /**
      * В литературе, особенно английской, методы часто называют
@@ -316,6 +321,13 @@ int main()
      *
      * Напишите в комментариях, чем функция-член отличается от обычной функции.
      */
+
+    /*
+        1. 'this'
+        2. доступ к private и protected
+        3. вызов через object.method() vs func()
+        4. принадлежит классу
+    */
 
     /**
      * Задание 1.9. Перегрузка функций и методов. Значение параметров по
