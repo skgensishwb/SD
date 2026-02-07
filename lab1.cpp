@@ -1,3 +1,8 @@
+#include <iostream>
+
+#include "rect.hpp"
+
+using namespace std;
 /**
  * Лабораторная работа №1. Классы и объекты в языке C++: конструкторы,
  * деструкторы, поля и методы. Различные способы применения классов. Сборка
@@ -42,8 +47,6 @@
  * компилятором и отладчиком.
  */
 
-#include <iostream>
-
 int main()
 {
     /**
@@ -82,10 +85,15 @@ int main()
      * следующего блока, кто определил этот код, что такой код делает в этом
      * случае и в общем случае.
      */
-
-    /* {
+    
+    {
         Rect rect;
-    } */
+
+        /*
+            компилятор сгенерирован код код создания объекта, который вызывает неявный default конструктор:
+            Была выделена память, но объекты не были проинициализированы
+        */
+    }
 
     /**
      * Задание 1.3. Явно определенные конструкторы. Конструктор по умолчанию.
@@ -100,9 +108,14 @@ int main()
      * нулями.
      */
     
-    /* {
+    {
         Rect rect(1, 2, 3, 4);
-    } */
+        /*
+            default конструктор не будет создан, так как уже есть конструктор с параметрами 
+            (так же нет параметров по умолчанию)
+            при этом в задании 1.2 мы не указываем параметры при создании экземпляра
+        */
+    }
 
     /**
      * Задание 1.4. Конструктор копирования.
@@ -112,11 +125,23 @@ int main()
      * и в общем случае?
      */
 
-    /* {
-        Rect rect1(1, 2, 3, 4);
-        Rect rect2 = rect1;
+    {
+        Rect rect1(1, 2, 3, 4); // конструктор с параметрами; определил я :) 
+        Rect rect2 = rect1; 
+        /*
+            конструктор копирования
+            вызывается автоматически (генерируется комилятором)
+            при инициализации нового объекта существующим
+            почленное копирование
+        */
         Rect rect3(rect1);
-    } */
+        /*
+            конструктор копирования
+            вызывается автоматически (генерируется комилятором)
+            при инициализации нового объекта существующим
+            почленное копирование
+        */
+    }
 
     /**
      * Задание 1.5. Деструктор.
@@ -129,6 +154,18 @@ int main()
      * печать. Пронаблюдайте и зафиксируйте в предыдущих заданиях, когда
      * вызывается деструктор.
      */
+
+    /*
+        Деструктор - метод, отвечающий за уничтожение объекта
+
+        Вызывается автоматически при выходе объекта из области видимости или при
+        вызове delete для динамических объектов
+
+        Так как в классе только переменные простых типов, деструктор очистку не выполняет
+        (но компилятор в любом случае создает деструктор)
+
+        В общем случае деструктор вызывает деструкторы всех полей, освобождает ресурсы
+    */
 
     /**
      * Задание 1.6. Когда вызываются конструкторы и деструкторы?
@@ -145,21 +182,66 @@ int main()
      * деструкторов и объясните это количество.
      */
 
-    /* {
-        Rect r1;
-        Rect *pR = new Rect(1,2,1,2);   
+    {
+        cout << "\nС этого момента считать" << endl;
+
+        Rect r1; // Explicit default constructor called: 0x7fffffffdd90
+        Rect *pR = new Rect(1,2,1,2); // The constructor with parameters is called: 0x55555556b6c0
         {
-            Rect r2(r1);
-            Rect arRect[2];
+            cout << endl;
+
+            Rect r2(r1); // Copy constructor 'called by the compiler': 0x7fffffffdda0
+            Rect arRect[2]; 
+            /*
+                Explicit default constructor called: 0x7fffffffddd0
+                Explicit default constructor called: 0x7fffffffdde0
+            */
+
+            cout << "Цикл" << endl;
+
             for(int i = 0; i < 3; i++)
             {
-                static Rect r3 (i,i,i,i) ;
-                Rect r4(*pR);
-                Rect r5(i,i,i,i);
+                static Rect r3 (i,i,i,i) ; // The constructor with parameters is called: 0x555555558160
+                /*
+                    Конструктор вызывается 1 раз
+                    Деструктор вызывается 1 раз при завершении программы
+                */
+                Rect r4(*pR); // Copy constructor 'called by the compiler': 0x7fffffffddb0
+                Rect r5(i,i,i,i); // The constructor with parameters is called: 0x7fffffffddc0
+                cout << endl;
+                /*
+                    Then 2 times:
+                        The destructor has been called (r5)
+                        The destructor has been called (r4)
+                        Copy constructor 'called by the compiler': 0x7fffffffddb0
+                        The constructor with parameters is called: 0x7fffffffddc0
+                    Then:
+                        The destructor has been called (r5)
+                        The destructor has been called (r4)
+                */
             }
+            cout << "Конец цикла" << endl;
+            /*
+                The destructor has been called (arRect[1] на скобке ниже)
+                The destructor has been called (arRect[0] на скобке ниже)
+                The destructor has been called (r2 на скобке ниже)
+            */
         }
-        delete pR;  
-    } */
+        cout << endl;
+        delete pR;
+        /*
+            The destructor has been called (pR на delete)
+            The destructor has been called (r1 на фигурной скобке ниже)
+            
+            The destructor has been called (r3 на завершении программы)
+        */
+
+        /*
+            Общее кол-во вызовов (в этом блоке):
+                Конструкторов: 12 (два в списке, 7 в цикле (r3 один раз, т.к. static))
+                Деструкторов: 12
+        */
+    }
 
     /**
      * Задание 1.7. Публичные и приватные поля класса.
