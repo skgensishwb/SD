@@ -16,14 +16,14 @@ Rect bounding_rect(Rect r1, Rect r2) {
 }
 
 void print_rect(Rect &r) {
-    int width = mod( (r.get_right() - r.get_left()) );
-    int hight = mod( (r.get_top() - r.get_bottom()) );
+    int width = r.get_width();
+    int height = r.get_height();
 
     int widthWithOutBorders = 0;
-    int hightWithOutBorders = 0;
-    if (width > 1 && hight > 1) { 
+    int heightWithOutBorders = 0;
+    if (width > 1 && height > 1) { 
         widthWithOutBorders = width-1; 
-        hightWithOutBorders = hight-2;
+        heightWithOutBorders = height-2;
     }
     else {
         cout << "Something strange.." << endl;
@@ -36,7 +36,7 @@ void print_rect(Rect &r) {
 
     cout << endl;
 
-    for (int i=0; i<hightWithOutBorders; i++) {
+    for (int i=0; i<heightWithOutBorders; i++) {
         cout << '|';
         for (int j=0; j< widthWithOutBorders; j++) {
             cout << ' ';
@@ -54,6 +54,26 @@ void print_rect(Rect &r) {
 int mod(int number) {
     if (number<0) { return (-number); }
     return number;
+}
+
+int Rect::get_width() {
+    return mod( (get_right() - get_left()) );
+}
+
+int Rect::get_height() {
+    return mod( (get_top() - get_bottom()) );
+}
+
+int Rect::get_square() {
+    return ( get_width() * get_height() );
+}
+
+void Rect::set_width(int amount) {
+    m_rightBorder = m_leftBorder + amount;
+}
+
+void Rect::set_height(int amount) {
+    m_topBorder = m_bottomBorder + amount;
 }
 
 void Rect::set_all(int left, int right, int top, int bottom) {

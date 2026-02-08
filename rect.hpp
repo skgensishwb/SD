@@ -10,6 +10,14 @@ class Rect {
         inline int get_right() { return m_rightBorder; }
         inline int get_top() { return m_topBorder; }
         inline int get_bottom() { return m_bottomBorder; }
+
+        int get_width();
+        int get_height();
+
+        int get_square();
+
+        void set_width(int amount);
+        void set_height(int amount);
         
         void set_all(int left, int right, int top, int bottom);
 

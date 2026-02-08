@@ -87,12 +87,14 @@ int main()
      */
     
     {
-        Rect rect;
+        #ifndef NDEBUG
+            Rect rect;
 
-        /*
-            компилятор сгенерирован код код создания объекта, который вызывает неявный default конструктор:
-            Была выделена память, но объекты не были проинициализированы
-        */
+            /*
+                компилятор сгенерирован код код создания объекта, который вызывает неявный default конструктор:
+                Была выделена память, но объекты не были проинициализированы
+            */
+        #endif
     }
 
     /**
@@ -109,12 +111,14 @@ int main()
      */
     
     {
-        Rect rect(1, 2, 3, 4);
-        /*
-            default конструктор не будет создан, так как уже есть конструктор с параметрами 
-            (так же нет параметров по умолчанию)
-            при этом в задании 1.2 мы не указываем параметры при создании экземпляра
-        */
+        #ifndef NDEBUG
+            Rect rect(1, 2, 3, 4);
+            /*
+                default конструктор не будет создан, так как уже есть конструктор с параметрами 
+                (так же нет параметров по умолчанию)
+                при этом в задании 1.2 мы не указываем параметры при создании экземпляра
+            */
+        #endif
     }
 
     /**
@@ -126,21 +130,23 @@ int main()
      */
 
     {
-        Rect rect1(1, 2, 3, 4); // конструктор с параметрами; определил я :) 
-        Rect rect2 = rect1; 
-        /*
-            конструктор копирования
-            вызывается автоматически (генерируется комилятором)
-            при инициализации нового объекта существующим
-            почленное копирование
-        */
-        Rect rect3(rect1);
-        /*
-            конструктор копирования
-            вызывается автоматически (генерируется комилятором)
-            при инициализации нового объекта существующим
-            почленное копирование
-        */
+        #ifndef NDEBUG
+            Rect rect1(1, 2, 3, 4); // конструктор с параметрами; определил я :) 
+            Rect rect2 = rect1; 
+            /*
+                конструктор копирования
+                вызывается автоматически (генерируется комилятором)
+                при инициализации нового объекта существующим
+                почленное копирование
+            */
+            Rect rect3(rect1);
+            /*
+                конструктор копирования
+                вызывается автоматически (генерируется комилятором)
+                при инициализации нового объекта существующим
+                почленное копирование
+            */
+        #endif
     }
 
     /**
@@ -183,52 +189,54 @@ int main()
      */
 
     {
-        cout << "\nС этого момента считать" << endl;
+        #ifndef NDEBUG
+            cout << "\nС этого момента считать" << endl;
 
-        Rect r1; // Explicit default constructor called: 0x7fffffffdd90
-        Rect *pR = new Rect(1,2,1,2); // The constructor with parameters is called: 0x55555556b6c0
-        {
-            cout << endl;
-
-            Rect r2(r1); // Copy constructor 'called by the compiler': 0x7fffffffdda0
-            Rect arRect[2]; 
-            /*
-                Explicit default constructor called: 0x7fffffffddd0
-                Explicit default constructor called: 0x7fffffffdde0
-            */
-
-            cout << "Цикл" << endl;
-
-            for(int i = 0; i < 3; i++)
+            Rect r1; // Explicit default constructor called: 0x7fffffffdd90
+            Rect *pR = new Rect(1,2,1,2); // The constructor with parameters is called: 0x55555556b6c0
             {
-                static Rect r3 (i,i,i,i) ; // The constructor with parameters is called: 0x555555558160
-                /*
-                    Конструктор вызывается 1 раз
-                    Деструктор вызывается 1 раз при завершении программы
-                */
-                Rect r4(*pR); // Copy constructor 'called by the compiler': 0x7fffffffddb0
-                Rect r5(i,i,i,i); // The constructor with parameters is called: 0x7fffffffddc0
                 cout << endl;
+
+                Rect r2(r1); // Copy constructor 'called by the compiler': 0x7fffffffdda0
+                Rect arRect[2]; 
                 /*
-                    Then 2 times:
-                        The destructor has been called (r5)
-                        The destructor has been called (r4)
-                        Copy constructor 'called by the compiler': 0x7fffffffddb0
-                        The constructor with parameters is called: 0x7fffffffddc0
-                    Then:
-                        The destructor has been called (r5)
-                        The destructor has been called (r4)
+                    Explicit default constructor called: 0x7fffffffddd0
+                    Explicit default constructor called: 0x7fffffffdde0
+                */
+
+                cout << "Цикл" << endl;
+
+                for(int i = 0; i < 3; i++)
+                {
+                    static Rect r3 (i,i,i,i) ; // The constructor with parameters is called: 0x555555558160
+                    /*
+                        Конструктор вызывается 1 раз
+                        Деструктор вызывается 1 раз при завершении программы
+                    */
+                    Rect r4(*pR); // Copy constructor 'called by the compiler': 0x7fffffffddb0
+                    Rect r5(i,i,i,i); // The constructor with parameters is called: 0x7fffffffddc0
+                    cout << endl;
+                    /*
+                        Then 2 times:
+                            The destructor has been called (r5)
+                            The destructor has been called (r4)
+                            Copy constructor 'called by the compiler': 0x7fffffffddb0
+                            The constructor with parameters is called: 0x7fffffffddc0
+                        Then:
+                            The destructor has been called (r5)
+                            The destructor has been called (r4)
+                    */
+                }
+                cout << "Конец цикла" << endl;
+                /*
+                    The destructor has been called (arRect[1] на скобке ниже)
+                    The destructor has been called (arRect[0] на скобке ниже)
+                    The destructor has been called (r2 на скобке ниже)
                 */
             }
-            cout << "Конец цикла" << endl;
-            /*
-                The destructor has been called (arRect[1] на скобке ниже)
-                The destructor has been called (arRect[0] на скобке ниже)
-                The destructor has been called (r2 на скобке ниже)
-            */
-        }
-        cout << endl;
-        delete pR;
+            cout << endl;
+            delete pR;
+        #endif
         /*
             The destructor has been called (pR на delete)
             The destructor has been called (r1 на фигурной скобке ниже)
@@ -305,12 +313,14 @@ int main()
      */
 
     {
-        cout << endl;
+        #ifndef NDEBUG
+            cout << endl;
 
-        Rect r;
-        cout << r.get_left() << "; " << r.get_right() << endl;
-        r.set_all(1, 2, 3, 4);
-        cout << r.get_top() << "; " << r.get_bottom() << endl;
+            Rect r;
+            cout << r.get_left() << "; " << r.get_right() << endl;
+            r.set_all(1, 2, 3, 4);
+            cout << r.get_top() << "; " << r.get_bottom() << endl;
+        #endif
     }
 
     /**
@@ -348,25 +358,27 @@ int main()
      */
     
     {
-        cout << endl;
+        #ifndef NDEBUG
+            cout << endl;
 
-        Rect r;
-        r.showLRTB();
-        
-        cout << endl;
+            Rect r;
+            r.showLRTB();
+            
+            cout << endl;
 
-        r.inflate(5);
-        r.showLRTB();
+            r.inflate(5);
+            r.showLRTB();
 
-        cout << endl;
+            cout << endl;
 
-        r.inflate(3, 4);
-        r.showLRTB();
+            r.inflate(3, 4);
+            r.showLRTB();
 
-        cout << endl;
+            cout << endl;
 
-        r.inflate(-2, 5, 4, -3);
-        r.showLRTB();
+            r.inflate(-2, 5, 4, -3);
+            r.showLRTB();
+        #endif
     }
 
     /**
@@ -383,11 +395,13 @@ int main()
      */
 
     {
-        Rect r1(4, 8, 8, 4);
-        Rect r2(-5, 7, 9, 0);
+        #ifndef NDEBUG
+            Rect r1(4, 8, 8, 4);
+            Rect r2(-5, 7, 9, 0);
 
-        Rect r3 = bounding_rect(r1, r2);
-        print_rect(r3);
+            Rect r3 = bounding_rect(r1, r2);
+            print_rect(r3);
+        #endif
     }
 
     /**
@@ -411,7 +425,24 @@ int main()
      */
 
     {
+        #ifndef NDEBUG
+            cout << endl;
 
+            Rect r1(-5, 7, 9, 0);
+
+            cout << "Width: " << r1.get_width() << endl;
+            cout << "Height: " << r1.get_height() << endl;
+            cout << "Square: " << r1.get_square() << endl;
+
+            cout << endl;
+
+            r1.set_height(5);
+            r1.set_width(5);
+
+            cout << "Width: " << r1.get_width() << endl;
+            cout << "Height: " << r1.get_height() << endl;
+            cout << "Square: " << r1.get_square() << endl;
+        #endif
     }
 
     /**
