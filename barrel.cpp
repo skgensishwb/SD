@@ -10,9 +10,6 @@ float Barrel::get_concentarion() {
 
 
 void Barrel::pourOverFromTo(Barrel& r2) {
-
-    // r1.method(r2)
-    
     r2.m_liters += 1;
     this->m_liters -=1;
 
@@ -25,14 +22,14 @@ void Barrel::pourOverFromTo(Barrel& r2) {
 }
 
 float Barrel::countConcentration(
-    float firstConcentration,
+    float thisConcentration,
     float secondConcentration,
     int secondVpreviously,
     int secondVnew
 ) {
 
     float concentration;
-    concentration = ((1 - firstConcentration) + secondVpreviously*secondConcentration) / (float)secondVnew;
+    concentration = ((1 - thisConcentration) + secondVpreviously*secondConcentration) / (float)secondVnew;
     return concentration;
 }
 
