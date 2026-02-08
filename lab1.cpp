@@ -534,7 +534,65 @@ int main()
      */
 
     {
+        #ifndef NDEBUG
+            cout << "\n\n" << endl;
 
+            Matrix testM1(5, 3, 2);
+            for (int i=0; i<testM1.get_height(); i++) {
+                for (int j=0; j<testM1.get_width(); j++) {
+                    cout << testM1.get(i, j) << " ";
+                }
+                cout << endl;
+            }
+
+            cout << "\n\n" << endl;
+
+            Matrix testM2(5, 3, 0);
+            for (int i=0; i<testM2.get_height(); i++) {
+                for (int j=0; j<testM2.get_width(); j++) {
+                    cout << testM2.get(i, j) << " ";
+                }
+                cout << endl;
+            }
+
+            cout << "\n\n" << endl;
+
+            testM2.set(1, 1, 5);
+            cout << testM2.get(1, 1) << endl;
+            cout << "Height: " << testM2.get_height() <<
+            "\nWidth: " << testM2.get_width() << endl;
+
+            testM2.negate();
+            for (int i=0; i<testM2.get_height(); i++) {
+                for (int j=0; j<testM2.get_width(); j++) {
+                    cout << testM2.get(i, j) << " ";
+                }
+                cout << endl;
+            }
+
+            cout << "\n\n" << endl;
+
+            testM2.add_in_place(testM1);
+            for (int i=0; i<testM2.get_height(); i++) {
+                for (int j=0; j<testM2.get_width(); j++) {
+                    cout << testM2.get(i, j) << " ";
+                }
+                cout << endl;
+            }
+
+            cout << "\n\n" << endl;
+
+            Matrix testM3(3, 5, 2);
+            Matrix testM4(5, 3, 2);
+
+            Matrix result = testM3.multiply(testM4);
+            for (int i=0; i<result.get_height(); i++) {
+                for (int j=0; j<result.get_width(); j++) {
+                    cout << result.get(i, j) << " ";
+                }
+                cout << endl;
+            }
+        #endif
     }
 
     /**

@@ -17,7 +17,7 @@ double Matrix::get(int i, int j) {
     return data[i][j];
 }
 
-void Matrix::set(int i, int j, double value){
+void Matrix::set(int i, int j, double value) {
     data[i][j] = value;
 }
 
@@ -42,7 +42,11 @@ void Matrix::negate(){
         }
 }
 
-void Matrix::add_in_place(Matrix &other){
+void Matrix::add_in_place(Matrix& other){
+    if (!((this->m == other.m) && (this->n == other.n))) {
+        throw logic_error("Incorrect dimensions");
+    }
+
     for (int i=0; i<get_height(); i++) {
             for (int j=0; j<get_width(); j++) {
                 this->data[i][j] += other.data[i][j];
@@ -50,8 +54,25 @@ void Matrix::add_in_place(Matrix &other){
         }
 }
 
-Matrix Matrix::multiply(Matrix &other){
-    
+Matrix Matrix::multiply(Matrix& other){
+    if (!(this->n == other.m)) {
+        throw logic_error("Incorrect dimensions");
+    }
+
+    Matrix result(this->m, other.n, 0);
+
+    double summ;
+    for (int k=0; k<(this->get_height()) ;k++) {
+        for (int j=0; j<(other.get_width()); j++) { 
+            summ = 0;
+            for (int i=0; i<(this->get_width()); i++) {
+                summ += ((this->get(k, i) ) * (other.get(i, j)));
+            }
+            result.set(k, j, summ);
+        }
+    }
+
+    return result;
 }
 
 
@@ -63,7 +84,7 @@ Matrix::Matrix(int n) {
     }
 }
 
-Matrix::Matrix(int m, int n, double fill_value=0) {
+Matrix::Matrix(int m, int n, double fill_value) {
     zeroMatrix(m, n);
 
     for (int i=0; i<get_height(); i++) {

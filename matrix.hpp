@@ -13,8 +13,8 @@ class Matrix {
         int get_height();
         int get_width(); // получить высоту и ширину соответственно
         void negate(); // операция `-A` для матрицы
-        void add_in_place(Matrix &other); // операция `this += other` для матрицы;
-        Matrix multiply(Matrix &other); // возвращает результат матричного умножения.
+        void add_in_place(Matrix& other); // операция `this += other` для матрицы;
+        Matrix multiply(Matrix& other); // возвращает результат матричного умножения.
 
         Matrix(int n);
         Matrix(int m, int n, double fill_value = 0);
