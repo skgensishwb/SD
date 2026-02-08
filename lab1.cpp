@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "rect.hpp"
+#include "barrel.hpp"
 
 using namespace std;
 /**
@@ -395,13 +396,13 @@ int main()
      */
 
     {
-        #ifndef NDEBUG
-            Rect r1(4, 8, 8, 4);
-            Rect r2(-5, 7, 9, 0);
 
-            Rect r3 = bounding_rect(r1, r2);
-            print_rect(r3);
-        #endif
+        Rect r1(4, 8, 8, 4);
+        Rect r2(-5, 7, 9, 0);
+
+        Rect r3 = bounding_rect(r1, r2);
+        print_rect(r3);
+
     }
 
     /**
@@ -477,16 +478,25 @@ int main()
      * блоке превратиться в настоящий код и решить задачу.
      */
 
-    /* {
-        Bochka alch(...); // бочка со спиртом
-        Bochka water(...);
+    {
+        Barrel alch(5, 0.96f); // бочка со спиртом
+        Barrel water(5, 1.f);
 
-        while(концентрация спирта в бочке alch > 50%)
-        {
-            alch.<перелить из>(water, ...);
-            water.<перелить из>(alch, ...);
+        int iteration = 0;
+        while(alch.get_concentarion() > 0.5)
+        {   
+            alch.pourOverFromTo(water);
+            water.pourOverFromTo(alch);
+
+            iteration += 1;
+
+            cout << endl;
+            cout << "Alch conc: " << alch.get_concentarion() << endl;
+            cout << "Water conc: " << water.get_concentarion() << endl;
         }
-    } */
+
+        cout << "\nTotal quantity of iterations: " << iteration << endl;
+    }
 
     /**
      * Задание 2.2. Объект как математическая сущность.
