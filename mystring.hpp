@@ -13,11 +13,16 @@ class MyString {
             с консоли (неопределенного размера).
         */
 
-        char* copyString(const char* newString);
+        void clearString();
+
+        void copyString(const char* newString);
 
         int len(const char* string);
 
         MyString();
         MyString(const char* stringCopy);
+        MyString(const MyString& other);
+
+        ~MyString();
 
 };

@@ -3,7 +3,7 @@
 #include "mystring.hpp"
 
 using namespace std;
-// очистить буфер где и как
+
 char MyString::get(int i) { 
     if (i < len(this->string)) {
         return string[i];
@@ -34,18 +34,26 @@ void MyString::set(int i, char c) {
 }
 
 void MyString::set_new_string(const char *str) { // расширение массива
-    string = copyString(str);
+    copyString(str);
 }
 
 void MyString::print() {
+    if (string == nullptr) {
+        throw runtime_error("Nullptr was passed!");
+    }
+
     int lenght = len(this->string);
 
     for (int i=0; i< lenght; i++) {
         cout << this->string[i];
     }
+
+    cout << endl;
 }
 
 void MyString::read_line() {
+    clearString();
+
     cout << "Input a line: ";
 
     char c;
@@ -54,11 +62,11 @@ void MyString::read_line() {
 
     while (cin.get(c) && c != '\n') {
         if (capacity + 1 >= newSize) {
-            capacity *= 2;
+            newSize *= 2;
 
-            char* newString = new char[capacity];
+            char* newString = new char[newSize];
 
-            for (int i = 0; i < newSize; i++) {
+            for (int i = 0; i < capacity; i++) {
                 newString[i] = string[i];
             }
 
@@ -68,32 +76,53 @@ void MyString::read_line() {
         string[capacity++] = c;
     }
 
-    
+    string[capacity] = '\0';
+    size = newSize;
 }
 
-char* MyString::copyString(const char* newString) {
-    int size = this->size;
-    int newSize = len(newString);
-    while(size < newSize + 1) {
-        size += 10;
+void MyString::clearString() {
+    size = 0;
+
+    char* newString = new char[size + 1];
+    newString[0] = '\0';
+
+    delete[] string;
+
+    string = newString;
+    size += 1;
+}
+
+void MyString::copyString(const char* newString) {
+    clearString();
+    
+    int newSize = this->size;
+    int sizeOfNewStr = len(newString);
+
+    while(newSize < sizeOfNewStr + 1) {
+        newSize += 10;
     }
 
-    char* string = new char[size];
-    for (int i=0; i<newSize; i++) {
-        string[i] = newString[i];
+    char* buffer = new char[newSize];
+    for (int i=0; i<sizeOfNewStr; i++) {
+        buffer[i] = newString[i];
     }
+    buffer[sizeOfNewStr] = '\0';
 
-    return string;
+    delete[] string;
+    size = newSize;
+    string = buffer;
 }
 
 int MyString::len(const char* string) {
-    int lenght = sizeof(*string) / sizeof(string[0]);
-    return lenght;
+    int length = 0;
+    while (string[length] != '\0') {
+        ++length;
+    }
+    return length;
 }
 
 MyString::MyString() {
-    size = 50;
-    char* string = new char[size];
+    clearString();
 }
 
 MyString::MyString(const char* stringCopy) {
@@ -101,10 +130,21 @@ MyString::MyString(const char* stringCopy) {
         throw runtime_error("Nullptr was passed!");
     }
 
-    int lenght = len(stringCopy);
+    clearString();
 
-    char* string = new char[lenght];
-    for (int i=0; i< lenght; i++) {
-        string[i] = stringCopy[i];
+    copyString(stringCopy);
+}
+
+MyString::MyString(const MyString& other) {
+    if (other.string == nullptr) {
+        throw runtime_error("Nullptr was passed!");
     }
+
+    clearString();
+
+    copyString(other.string);
+}
+
+MyString::~MyString() {
+    delete [] string;
 }

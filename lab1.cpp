@@ -3,6 +3,7 @@
 #include "rect.hpp"
 #include "barrel.hpp"
 #include "matrix.hpp"
+#include "mystring.hpp"
 
 using namespace std;
 /**
@@ -632,19 +633,62 @@ int main()
      */
 
     {
+        #ifndef NDEBUG
+            MyString testStr;
+            MyString testStr2("Hello!");
+            MyString testStr3("Helloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo!");
 
+            testStr.print();
+
+            cout << endl;
+
+            testStr2.print();
+
+            cout << endl;
+
+            testStr3.print();
+
+
+            const char* strTest = "hey how are you?";
+            strTest = "hey how are you?";
+            testStr.set_new_string(strTest);
+            testStr.print();
+
+            cout << endl;
+
+            testStr.set(0, 'G');
+            testStr.print();
+
+            cout << endl;
+
+            testStr.get(0);
+
+            cout << endl;
+
+            testStr.read_line();
+            testStr.print();
+        #endif
     }
 
     /**
      * Проверьте, что ваша строка корректно работает в следующих ситуациях.
      */
 
-    /* {
-        MyString s1;
-        MyString s2 = s1;
-        MyString s3("This is my string");
-        MyString s4 = s3;
-    } */
+    {
+        #ifndef NDEBUG
+            MyString s1;
+            MyString s2 = s1;
+            MyString s3("This is my string");
+            MyString s4 = s3;
+
+            cout << endl;
+            cout << "2.3 Test: " << endl;
+            s1.print();
+            s2.print();
+            s3.print();
+            s4.print();
+        #endif
+    }
 
     /**
      * Задание 2.4. Объект-алгоритм.
