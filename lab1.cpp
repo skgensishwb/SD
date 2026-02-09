@@ -4,6 +4,7 @@
 #include "barrel.hpp"
 #include "matrix.hpp"
 #include "mystring.hpp"
+#include "text.hpp"
 
 using namespace std;
 /**
@@ -709,13 +710,15 @@ int main()
      * Примерное использование класса приведено ниже.
      */
 
-    /* {
-        int line_width = 40;
-        MyString input;
-        input.read_line();
-        TextWrapper wrapper(input, line_width);
-        wrapper.print_wrapped();
-    } */
+    {
+        // int line_width = 40;
+        // MyString input;
+        // input.read_line();
+        // Text wrapper(input, line_width);
+        // wrapper.printLine();
+        Text string;
+        string.readLine();
+    }
 
     /**
      * Задание 3. Сборка проекта, Make-файлы.
