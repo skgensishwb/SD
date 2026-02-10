@@ -1,3 +1,5 @@
+#pragma once
+
 class Matrix {
     private:
         int m{}; // число строк

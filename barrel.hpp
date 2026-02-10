@@ -1,3 +1,5 @@
+#pragma once
+
 class Barrel {
     private:
         int m_liters;

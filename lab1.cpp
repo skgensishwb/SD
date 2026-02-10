@@ -711,13 +711,13 @@ int main()
      */
 
     {
-        // int line_width = 40;
-        // MyString input;
-        // input.read_line();
-        // Text wrapper(input, line_width);
-        // wrapper.printLine();
-        Text string;
-        string.readLine();
+        int line_width = 40;
+        MyString input;
+        input.read_line();
+        Text wrapper(input, line_width);
+        //Text wrapper2;
+        //wrapper2("sdfsdf sdfs ssdf sdf sdfs sfsdf fsf sf sfs sd", line_width);
+        wrapper.readLine();
     }
 
     /**

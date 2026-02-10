@@ -1,3 +1,7 @@
+#pragma once
+
+#include "mystring.hpp"
+
 class Text {
     private:
         int lenOfString;
@@ -11,14 +15,15 @@ class Text {
         void readLine();
 
         Text();
-        // Text(char* input, int len=40);
-
-        //реализовать отдельный метод который разбирает строку на слова
+        Text(const char* input, int len=40);
+        Text(MyString& input, int len=40);
 
         ~Text();
 
     private:
         void addWord(char* word, int len);
+
+        void splitStringIntoWords(const char* string, int len);
 
         void clear();
 

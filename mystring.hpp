@@ -1,7 +1,9 @@
+#pragma once
+
 class MyString {
     private:
         int size;
-        char* string;
+        char* userString;
     public:
         char get(int i); // получение i-того элемента строки;
         void set(int i, char c); // установка i-того элемента строки;
@@ -12,6 +14,8 @@ class MyString {
             замена текущего содержимого строки на строку, считанную 
             с консоли (неопределенного размера).
         */
+
+        char* getString();
 
         void clearString();
 

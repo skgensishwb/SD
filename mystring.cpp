@@ -5,28 +5,28 @@
 using namespace std;
 
 char MyString::get(int i) { 
-    if (i < len(this->string)) {
-        return string[i];
+    if (i < len(this->userString)) {
+        return userString[i];
     }
     throw runtime_error("Array out of bounds");
 }
 
 void MyString::set(int i, char c) {
-    int lenght = len(this->string);
+    int lenght = len(this->userString);
     if (i < lenght) {
-        string[i] = c;
+        userString[i] = c;
     }
     else if (i == lenght) {
         int newSize = size + 1;
 
         char* newString = new char[newSize];
         for (int j = 0; j < newSize; j++) {
-                newString[j] = string[j];
+                newString[j] = userString[j];
             }
         newString[i] = c;
 
-        delete[] string;
-        string = newString;
+        delete[] userString;
+        userString = newString;
     }
     else {
         throw runtime_error("Array out of bounds");
@@ -38,14 +38,14 @@ void MyString::set_new_string(const char *str) { // расширение мас�
 }
 
 void MyString::print() {
-    if (string == nullptr) {
+    if (userString == nullptr) {
         throw runtime_error("Nullptr was passed!");
     }
 
-    int lenght = len(this->string);
+    int lenght = len(this->userString);
 
     for (int i=0; i< lenght; i++) {
-        cout << this->string[i];
+        cout << this->userString[i];
     }
 
     cout << endl;
@@ -67,17 +67,21 @@ void MyString::read_line() {
             char* newString = new char[newSize];
 
             for (int i = 0; i < capacity; i++) {
-                newString[i] = string[i];
+                newString[i] = userString[i];
             }
 
-            delete[] string;
-            string = newString;
+            delete[] userString;
+            userString = newString;
         }
-        string[capacity++] = c;
+        userString[capacity++] = c;
     }
 
-    string[capacity] = '\0';
+    userString[capacity] = '\0';
     size = newSize;
+}
+
+char* MyString::getString() {
+    return userString;
 }
 
 void MyString::clearString() {
@@ -86,9 +90,9 @@ void MyString::clearString() {
     char* newString = new char[size + 1];
     newString[0] = '\0';
 
-    delete[] string;
+    delete[] userString;
 
-    string = newString;
+    userString = newString;
     size += 1;
 }
 
@@ -108,9 +112,9 @@ void MyString::copyString(const char* newString) {
     }
     buffer[sizeOfNewStr] = '\0';
 
-    delete[] string;
+    delete[] userString;
     size = newSize;
-    string = buffer;
+    userString = buffer;
 }
 
 int MyString::len(const char* string) {
@@ -136,15 +140,15 @@ MyString::MyString(const char* stringCopy) {
 }
 
 MyString::MyString(const MyString& other) {
-    if (other.string == nullptr) {
+    if (other.userString == nullptr) {
         throw runtime_error("Nullptr was passed!");
     }
 
     clearString();
 
-    copyString(other.string);
+    copyString(other.userString);
 }
 
 MyString::~MyString() {
-    delete [] string;
+    delete [] userString;
 }

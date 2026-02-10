@@ -1,3 +1,5 @@
+#pragma once
+
 class Rect {
     private:
         int m_leftBorder;

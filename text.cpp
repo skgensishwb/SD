@@ -4,73 +4,37 @@
 
 using namespace std;
 
-/* Реализуйте следующую программу. Пользователь вводит строку (любого
-     * размера), после чего пользователю выводится на консоль следующее
-     * изображение, где его ввод помещен в "speech bubble":
-     *
-     *  _____________________________________
-     * / Here user input is shown. This line \
-     * \ must be at most 40 characters long. /
-     *  ------------------------------------
-     *     \
-     *      \
-     *        /\_/\  (
-     *       ( ^.^ ) _)
-     *         \"/  (
-     *       ( | | )
-     *      (__d b__)
-     *
-     *  При этом длина строки в "облачке" должна быть не более 40 символов, при
-     *  этом слова должны переноситься аккуратно. Это означет, что не должно
-     *  быть переносов в центре слова (если только это слово не больше 40
-     *  символов).
-     *
-     *  Дизайн облачка и ASCII-арт допустимо поменять по усмотрению.
-     *
-     *  Подсказка: обратите внимание на конкатенацию строковых литералов в
-     *  языке С, это позволит задавать подобные рисунки так, чтобы они
-     *  адекватно выглядели в коде.
-    */
-
 void Text::readLine() {
     clear();
     cout << "\n\n\nInput a string: " << endl;
 
     char c;
-    
-    int bufCap = 8;
-    int bufLen = 0;
-    char* buf = new char[bufCap];
 
-    int newBufCap;
+    int inputLen = 0;
+    int inputCap = 50;
+    int newStrCap = 0;
+
+    char* input = new char[inputCap];
 
     while (cin.get(c) && c != '\n') {
-        if (c == ' ') { // все еще проблема начальных пробелов
-            addWord(buf, bufLen);
-            bufLen = 0;
-        } 
-        else {
-            if (bufLen >= bufCap) {
-                newBufCap = bufCap * 2; 
+        if (inputLen >= inputCap) {
+            newStrCap = inputCap * 2;
+            char* newInput = new char[newStrCap];
 
-                char* newBuf = new char[newBufCap];
-                for (int i=0; i<bufLen ; i++) {
-                    newBuf[i] = buf[i];
-                }
-                
-                delete[] buf;
-                buf = newBuf;
-                bufCap = newBufCap;
+            for (int i=0; i< inputLen; i++) {
+                newInput[i] = input[i];
             }
-            buf[bufLen++] = c;
+
+            delete[] input;
+            input = newInput;
+            inputCap = newStrCap;
         }
-    } 
+        input[inputLen++] = c;
+    }
 
-    addWord(buf, bufLen);
+    splitStringIntoWords(input, inputLen);
 
-    delete[] buf;
-    
-    printLine();
+    delete[] input;
 }
 
 void Text::addWord(char* word, int len) {
@@ -108,6 +72,50 @@ void Text::addWord(char* word, int len) {
     lenOfWords[arrayWordCount] = len;
     arrayOfWords[arrayWordCount] = newWord;
     arrayWordCount++;
+}
+
+void Text::splitStringIntoWords(const char* string, int len) {
+    clear();
+
+    char c;
+    
+    int bufCap = 15;
+    int bufLen = 0;
+    char* buf = new char[bufCap];
+
+    int newBufCap;
+
+    while (cin.get(c) && c != '\n') {
+        if (c == ' ') {
+            if (bufLen > 0) {
+                addWord(buf, bufLen);
+                bufLen = 0;
+            }
+        } 
+        else {
+            if (bufLen >= bufCap) {
+                newBufCap = bufCap * 2; 
+
+                char* newBuf = new char[newBufCap];
+                for (int i=0; i<bufLen ; i++) {
+                    newBuf[i] = buf[i];
+                }
+                
+                delete[] buf;
+                buf = newBuf;
+                bufCap = newBufCap;
+            }
+            buf[bufLen++] = c;
+        }
+    }
+
+    if (bufLen > 0) {
+        addWord(buf, bufLen);
+    }
+
+    delete[] buf;
+
+    printLine();
 }
 
 void Text::clear() {
@@ -165,6 +173,14 @@ void Text::printLine() {
 
 Text::Text() : arrayOfWords(nullptr), lenOfWords(nullptr),
                arrayWordCount(0), arrayWordCapacity(0), lenOfString(40) {}
+
+Text::Text(const char* input, int len=40) {
+    splitStringIntoWords(input, len);
+}
+
+Text::Text(MyString& input, int len) {
+    splitStringIntoWords(input.getString(), len);
+}
 
 Text::~Text() {
     clear();
