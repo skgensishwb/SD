@@ -64,7 +64,7 @@ void Text::addWord(char* word, int len) {
     }
 
     char* newWord = new char[len + 1];
-    for (int i=0; i < len + 1; i++) {
+    for (int i=0; i < len; i++) {
         newWord[i] = word[i];
     }
     newWord[len] = '\0';
@@ -74,19 +74,17 @@ void Text::addWord(char* word, int len) {
     arrayWordCount++;
 }
 
-void Text::splitStringIntoWords(const char* string, int len) {
+void Text::splitStringIntoWords(const char* stringToSplit, int len) {
     clear();
 
-    char c;
-    
     int bufCap = 15;
     int bufLen = 0;
     char* buf = new char[bufCap];
 
     int newBufCap;
 
-    while (cin.get(c) && c != '\n') {
-        if (c == ' ') {
+    for (int j=0; j<len; j++) {
+        if (stringToSplit[j] == ' ') {
             if (bufLen > 0) {
                 addWord(buf, bufLen);
                 bufLen = 0;
@@ -105,7 +103,7 @@ void Text::splitStringIntoWords(const char* string, int len) {
                 buf = newBuf;
                 bufCap = newBufCap;
             }
-            buf[bufLen++] = c;
+            buf[bufLen++] = stringToSplit[j];
         }
     }
 
@@ -132,6 +130,8 @@ void Text::clear() {
 }
 
 void Text::printLine() {
+    cout << endl;
+
     int lenString = 0; 
     for (int i=0;  i< arrayWordCount; i++) {
         if (lenOfWords[i] > lenOfString) {
@@ -174,12 +174,22 @@ void Text::printLine() {
 Text::Text() : arrayOfWords(nullptr), lenOfWords(nullptr),
                arrayWordCount(0), arrayWordCapacity(0), lenOfString(40) {}
 
-Text::Text(const char* input, int len=40) {
-    splitStringIntoWords(input, len);
+Text::Text(const char* input, int maxWidth)
+    : arrayOfWords(nullptr), lenOfWords(nullptr),
+      arrayWordCount(0), arrayWordCapacity(0), lenOfString(maxWidth)
+{
+    int inputLen = 0;
+    while (input[inputLen] != '\0') inputLen++;
+    splitStringIntoWords(input, inputLen);
 }
 
-Text::Text(MyString& input, int len) {
-    splitStringIntoWords(input.getString(), len);
+Text::Text(MyString& input, int len)     : arrayOfWords(nullptr), lenOfWords(nullptr),
+      arrayWordCount(0), arrayWordCapacity(0), lenOfString(len)
+{
+    char* str = input.getString();
+    int inputLen = 0;
+    while (str[inputLen] != '\0') inputLen++;
+    splitStringIntoWords(str, inputLen);
 }
 
 Text::~Text() {

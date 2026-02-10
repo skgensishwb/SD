@@ -715,8 +715,7 @@ int main()
         MyString input;
         input.read_line();
         Text wrapper(input, line_width);
-        //Text wrapper2;
-        //wrapper2("sdfsdf sdfs ssdf sdf sdfs sfsdf fsf sf sfs sd", line_width);
+        Text wrapper2("sdfsdf sdfs ssdf sdf sdfs sfsdf fsf sf sfs sd", line_width);
         wrapper.readLine();
     }
 

@@ -16,14 +16,14 @@ class Text {
 
         Text();
         Text(const char* input, int len=40);
-        Text(MyString& input, int len=40);
+        Text(MyString& input, int len);
 
         ~Text();
 
     private:
         void addWord(char* word, int len);
 
-        void splitStringIntoWords(const char* string, int len);
+        void splitStringIntoWords(const char* string, int maxWidth);
 
         void clear();
 
