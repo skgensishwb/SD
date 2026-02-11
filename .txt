@@ -1,0 +1,41 @@
+CXX := g++
+CXXFLAGS := -Wall -Wextra //включают предупреждения
+
+ifdef DEBUG
+CXX += -g -O0 -fsanitize=address
+LDFLAGS +=-fsanitize=address
+TARGET := build/degub.o
+else
+CXX += -O2 -DNDEBUG
+TARGET := build/ndegub.o
+endif
+
+SRC_DIR := src
+BUILD_DIR := build
+
+SRCS := text.cpp matrix.cpp mystring.cpp barrel.cpp rect.cpp
+OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:.cpp=.o))
+
+vpath %.cpp $(SRC_DIR)
+vpath %.hpp $(SRC_DIR)
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS) $(SRC_DIR)/lab1.cpp | $(BUILD_DIR)
+    $(CXX) $(CXXFLAGS) $(LDFLAGS) $(SRC_DIR)/lab1.cpp $(OBJS) -o $@ 
+    
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+    $(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR):
+    mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/barrel.o: barrel.hpp
+$(BUILD_DIR)/mystring.o: mystring.hpp
+$(BUILD_DIR)/rect.o: rect.hpp
+$(BUILD_DIR)/text.o: text.hpp mystring.hpp
+
+clean:
+    rm -rf $(BUILD_DIR)

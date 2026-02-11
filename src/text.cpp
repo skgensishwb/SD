@@ -171,20 +171,31 @@ void Text::printLine() {
     cout << endl;
 }
 
-Text::Text() : arrayOfWords(nullptr), lenOfWords(nullptr),
-               arrayWordCount(0), arrayWordCapacity(0), lenOfString(40) {}
+Text::Text()
+    : lenOfString(40),
+      arrayWordCount(0),
+      arrayWordCapacity(0),
+      lenOfWords(nullptr),
+      arrayOfWords(nullptr) {}
 
 Text::Text(const char* input, int maxWidth)
-    : arrayOfWords(nullptr), lenOfWords(nullptr),
-      arrayWordCount(0), arrayWordCapacity(0), lenOfString(maxWidth)
+    : lenOfString(maxWidth),
+      arrayWordCount(0),
+      arrayWordCapacity(0),
+      lenOfWords(nullptr),
+      arrayOfWords(nullptr)
 {
     int inputLen = 0;
     while (input[inputLen] != '\0') inputLen++;
     splitStringIntoWords(input, inputLen);
 }
 
-Text::Text(MyString& input, int len)     : arrayOfWords(nullptr), lenOfWords(nullptr),
-      arrayWordCount(0), arrayWordCapacity(0), lenOfString(len)
+Text::Text(MyString& input, int len)
+    : lenOfString(len),
+      arrayWordCount(0),
+      arrayWordCapacity(0),
+      lenOfWords(nullptr),
+      arrayOfWords(nullptr)
 {
     char* str = input.getString();
     int inputLen = 0;

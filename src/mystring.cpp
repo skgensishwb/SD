@@ -8,7 +8,8 @@ char MyString::get(int i) {
     if (i < len(this->userString)) {
         return userString[i];
     }
-    throw runtime_error("Array out of bounds");
+    cout << "\nArray out of bounds\n" << endl;
+    return '\0';
 }
 
 void MyString::set(int i, char c) {
@@ -29,7 +30,7 @@ void MyString::set(int i, char c) {
         userString = newString;
     }
     else {
-        throw runtime_error("Array out of bounds");
+        cout << "\nArray out of bounds\n" << endl;
     }
 }
 
@@ -39,16 +40,16 @@ void MyString::set_new_string(const char *str) { // расширение мас�
 
 void MyString::print() {
     if (userString == nullptr) {
-        throw runtime_error("Nullptr was passed!");
+        cout << "\nNullptr\n" << endl;
+    } else {
+        int lenght = len(this->userString);
+
+        for (int i=0; i< lenght; i++) {
+            cout << this->userString[i];
+        }
+
+        cout << endl;
     }
-
-    int lenght = len(this->userString);
-
-    for (int i=0; i< lenght; i++) {
-        cout << this->userString[i];
-    }
-
-    cout << endl;
 }
 
 void MyString::read_line() {
@@ -125,28 +126,30 @@ int MyString::len(const char* string) {
     return length;
 }
 
-MyString::MyString() {
+MyString::MyString() : size(0), userString(nullptr) {
     clearString();
 }
 
-MyString::MyString(const char* stringCopy) {
+MyString::MyString(const char* stringCopy) : size(0) {
     if (stringCopy == nullptr) {
-        throw runtime_error("Nullptr was passed!");
+        cout << "\nNullptr\n" << endl;
+    } else {
+        
+        clearString();
+
+        copyString(stringCopy);
     }
-
-    clearString();
-
-    copyString(stringCopy);
 }
 
-MyString::MyString(const MyString& other) {
+MyString::MyString(const MyString& other) : size(0) {
     if (other.userString == nullptr) {
-        throw runtime_error("Nullptr was passed!");
+        cout << "\nNullptr\n" << endl;
+    } else {
+        
+        clearString();
+
+        copyString(other.userString);
     }
-
-    clearString();
-
-    copyString(other.userString);
 }
 
 MyString::~MyString() {
