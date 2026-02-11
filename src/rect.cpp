@@ -31,7 +31,7 @@ void print_rect(Rect &r) {
     }
 
     for (int i=0; i<width; i++) {
-        cout << "—";
+        cout << "\xe2\x80\x94";
     }
 
     cout << endl;
@@ -45,7 +45,7 @@ void print_rect(Rect &r) {
     }
 
     for (int i=0; i<width; i++) {
-        cout << "—";
+        cout << "\xe2\x80\x94";
     }
 
     cout << endl;
@@ -56,32 +56,59 @@ int mod(int number) {
     return number;
 }
 
+// Старая реализация:
+// int Rect::get_width() {
+//     return mod( (get_right() - get_left()) );
+// }
+// int Rect::get_height() {
+//     return mod( (get_top() - get_bottom()) );
+// }
+
+// Новая реализация:
 int Rect::get_width() {
-    return mod( (get_right() - get_left()) );
+    return mod(m_width);
 }
 
 int Rect::get_height() {
-    return mod( (get_top() - get_bottom()) );
+    return mod(m_height);
 }
 
 int Rect::get_square() {
     return ( get_width() * get_height() );
 }
 
+// Старая реализация:
+// void Rect::set_width(int amount) {
+//     m_rightBorder = m_leftBorder + amount;
+// }
+// void Rect::set_height(int amount) {
+//     m_topBorder = m_bottomBorder + amount;
+// }
+
+// Новая реализация:
 void Rect::set_width(int amount) {
-    m_rightBorder = m_leftBorder + amount;
+    m_width = amount;
 }
 
 void Rect::set_height(int amount) {
-    m_topBorder = m_bottomBorder + amount;
+    m_height = amount;
 }
 
+// Старая реализация:
+// void Rect::set_all(int left, int right, int top, int bottom) {
+//     m_leftBorder = left;
+//     m_rightBorder = right;
+//     m_topBorder = top;
+//     m_bottomBorder = bottom;
+// }
+
+// Новая реализация:
 void Rect::set_all(int left, int right, int top, int bottom) {
-            m_leftBorder = left;
-            m_rightBorder = right;
-            m_topBorder = top;
-            m_bottomBorder = bottom;
-        }
+    m_x = left;
+    m_y = bottom;
+    m_width = right - left;
+    m_height = top - bottom;
+}
 
 void Rect::inflate(int amount) {
     set_all(
@@ -111,58 +138,75 @@ void Rect::inflate(int d_left, int d_right, int d_top, int d_bottom) {
 }
 
 void Rect::move(int moveX, int moveY) {
-    set_all(
-        (get_left() + moveX),
-        (get_right() + moveX),
-        (get_top() + moveY),
-        (get_bottom() + moveY)
-    );
+    // Старая реализация пересчитывала все 4 границы через set_all.
+    // Новая — просто сдвигает точку:
+    m_x += moveX;
+    m_y += moveY;
 }
 
 void Rect::showLRTB() {
-        cout << "Left: " << m_leftBorder << endl;
-        cout << "Right: " << m_rightBorder << endl;
-        cout << "Top: " << m_topBorder << endl;
-        cout << "Bottom: " << m_bottomBorder << endl;
-    }
+    cout << "Left: " << get_left() << endl;
+    cout << "Right: " << get_right() << endl;
+    cout << "Top: " << get_top() << endl;
+    cout << "Bottom: " << get_bottom() << endl;
+}
 
-Rect::Rect(int m_leftBorder, int m_rightBorder, int m_topBorder, int m_bottomBorder) {
-            
-            #ifndef NDEBUG
-                cout << "The constructor with parameters is called: " << this << endl;
-            #endif
+// Старая реализация:
+// Rect::Rect(int m_leftBorder, int m_rightBorder, int m_topBorder, int m_bottomBorder) {
+//     this->m_leftBorder = m_leftBorder;
+//     this->m_rightBorder = m_rightBorder;
+//     this->m_topBorder = m_topBorder;
+//     this->m_bottomBorder = m_bottomBorder;
+// }
 
-            this->m_leftBorder = m_leftBorder;
-            this->m_rightBorder = m_rightBorder;
-            this->m_topBorder = m_topBorder;
-            this->m_bottomBorder = m_bottomBorder;
-        }
+// Новая реализация:
+Rect::Rect(int left, int right, int top, int bottom)
+    : m_x(left),
+      m_y(bottom),
+      m_width(right - left),
+      m_height(top - bottom)
+{
+    #ifndef NDEBUG
+        cout << "The constructor with parameters is called: " << this << endl;
+    #endif
+}
 
-Rect::Rect() {
+// Старая реализация:
+// Rect::Rect() {
+//     m_leftBorder = 0; m_rightBorder = 0;
+//     m_topBorder = 0;  m_bottomBorder = 0;
+// }
 
-            #ifndef NDEBUG
-                cout << "Explicit default constructor called: " << this << endl;
-            #endif
+// Новая реализация:
+Rect::Rect()
+    : m_x(0), m_y(0), m_width(0), m_height(0)
+{
+    #ifndef NDEBUG
+        cout << "Explicit default constructor called: " << this << endl;
+    #endif
+}
 
-            m_leftBorder = 0;
-            m_rightBorder = 0;
-            m_topBorder = 0;
-            m_bottomBorder = 0;
-        }
+// Старая реализация:
+// Rect::Rect(const Rect& other)
+//     : m_leftBorder(other.m_leftBorder),
+//       m_rightBorder(other.m_rightBorder),
+//       m_topBorder(other.m_topBorder),
+//       m_bottomBorder(other.m_bottomBorder) {}
 
-Rect::Rect(const Rect& other) 
-        : m_leftBorder(other.m_leftBorder),
-            m_rightBorder(other.m_rightBorder),
-            m_topBorder(other.m_topBorder),
-            m_bottomBorder(other.m_bottomBorder)
-    {
-            #ifndef NDEBUG
-                cout << "Copy constructor 'called by the compiler': " << this << endl;
-            #endif
-        }
+// Новая реализация:
+Rect::Rect(const Rect& other)
+    : m_x(other.m_x),
+      m_y(other.m_y),
+      m_width(other.m_width),
+      m_height(other.m_height)
+{
+    #ifndef NDEBUG
+        cout << "Copy constructor 'called by the compiler': " << this << endl;
+    #endif
+}
 
 Rect::~Rect() {
-            #ifndef NDEBUG
-                cout << "The destructor has been called" << endl;
-            #endif
-        }
+    #ifndef NDEBUG
+        cout << "The destructor has been called" << endl;
+    #endif
+}
