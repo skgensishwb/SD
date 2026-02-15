@@ -55,12 +55,12 @@ $(BUILD_DIR)/test_%.out: $(TEST_DIR)/test_%.cpp $(BUILD_DIR)/rect.o | $(BUILD_DI
 	$(CXX) $(CXXFLAGS) $< $(BUILD_DIR)/rect.o -o $@
 
 test: $(TEST_BINS)
-	@echo "=== Запуск всех тестов ==="
+	@echo "Запуск всех тестов"
 	@for t in $(TEST_BINS); do \
-		echo "--- Запуск $$t ---"; \
+		echo "Запуск $$t"; \
 		./$$t || exit 1; \
 	done
-	@echo "=== Все тесты пройдены ==="
+	@echo "Все тесты пройдены"
 
 $(BUILD_DIR)/barrel.o: barrel.hpp
 $(BUILD_DIR)/mystring.o: mystring.hpp
