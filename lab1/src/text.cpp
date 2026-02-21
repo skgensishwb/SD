@@ -2,11 +2,9 @@
 
 #include "text.hpp"
 
-using namespace std;
-
 void Text::readLine() {
     clear();
-    cout << "\n\n\nInput a string: " << endl;
+    std::cout << "\n\n\nInput a string: " << std::endl;
 
     char c;
 
@@ -16,7 +14,7 @@ void Text::readLine() {
 
     char* input = new char[inputCap];
 
-    while (cin.get(c) && c != '\n') {
+    while (std::cin.get(c) && c != '\n') {
         if (inputLen >= inputCap) {
             newStrCap = inputCap * 2;
             char* newInput = new char[newStrCap];
@@ -130,45 +128,45 @@ void Text::clear() {
 }
 
 void Text::printLine() {
-    cout << endl;
+    std::cout << std::endl;
 
     int lenString = 0; 
     for (int i=0;  i< m_arrayWordCount; i++) {
         if (m_lenOfWords[i] > m_lenOfString) {
             if (lenString != 0) {
-                cout << endl;
+                std::cout << std::endl;
             }
             int pos = 0;
             while (pos < m_lenOfWords[i]) {
                 int chunk = m_lenOfWords[i] - pos;
                 if (chunk > m_lenOfString) chunk = m_lenOfString;
                 for (int j = 0; j < chunk; j++) {
-                    cout << m_arrayOfWords[i][pos + j];
+                    std::cout << m_arrayOfWords[i][pos + j];
                 }
                 pos += chunk;
-                if (pos < m_lenOfWords[i]) cout << endl;
+                if (pos < m_lenOfWords[i]) std::cout << std::endl;
                 lenString = chunk;
             }
         }
         else {
             if (lenString + m_lenOfWords[i] > m_lenOfString) {
-                cout << endl;
+                std::cout << std::endl;
                 lenString = 0;
             }
 
             for (int j=0; j < m_lenOfWords[i]; j++) {
-                cout <<  m_arrayOfWords[i][j];
+                std::cout <<  m_arrayOfWords[i][j];
                 lenString++;
             }
 
             if (lenString < m_lenOfString) {
-                cout << ' ';
+                std::cout << ' ';
                 lenString ++;
             }
         }
     }
 
-    cout << endl;
+    std::cout << std::endl;
 }
 
 Text::Text()
