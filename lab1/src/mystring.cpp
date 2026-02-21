@@ -19,7 +19,7 @@ void MyString::set(int i, char c) {
         int newSize = m_size + 1;
 
         char* newString = new char[newSize];
-        for (int j = 0; j < newSize; j++) {
+        for (int j = 0; j < m_size; j++) {
                 newString[j] = m_userString[j];
             }
         newString[i] = c;
@@ -85,15 +85,10 @@ char* MyString::getString() {
 }
 
 void MyString::clearString() {
-    m_size = 0;
-
-    char* newString = new char[m_size + 1];
-    newString[0] = '\0';
-
     delete[] m_userString;
-
-    m_userString = newString;
-    m_size += 1;
+    m_size = 1;
+    m_userString = new char[m_size];
+    m_userString[0] = '\0';
 }
 
 void MyString::copyString(const char* newString) {
