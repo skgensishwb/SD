@@ -93,9 +93,8 @@ int main()
     {
         #ifndef NDEBUG
             Rect rect;
-
             /*
-                компилятор сгенерирован код код создания объекта, который вызывает неявный default конструктор:
+                Компилятор сгенерирован код создания объекта, который вызывает неявный default конструктор:
                 Была выделена память, но объекты не были проинициализированы
             */
         #endif
@@ -118,9 +117,9 @@ int main()
         #ifndef NDEBUG
             Rect rect(1, 2, 3, 4);
             /*
-                default конструктор не будет создан, так как уже есть конструктор с параметрами 
+                Default конструктор не будет создан, так как уже есть конструктор с параметрами 
                 (так же нет параметров по умолчанию)
-                при этом в задании 1.2 мы не указываем параметры при создании экземпляра
+                При этом в задании 1.2 мы не указываем параметры при создании экземпляра
             */
         #endif
     }
@@ -138,17 +137,17 @@ int main()
             Rect rect1(1, 2, 3, 4); // конструктор с параметрами; определил я :) 
             Rect rect2 = rect1; 
             /*
-                конструктор копирования
-                вызывается автоматически (генерируется комилятором)
+                Конструктор копирования
+                Вызывается автоматически (генерируется комилятором)
                 при инициализации нового объекта существующим
-                почленное копирование
+                Почленное копирование
             */
             Rect rect3(rect1);
             /*
-                конструктор копирования
-                вызывается автоматически (генерируется комилятором)
+                Конструктор копирования
+                Вызывается автоматически (генерируется комилятором)
                 при инициализации нового объекта существующим
-                почленное копирование
+                Почленное копирование
             */
         #endif
     }
@@ -268,7 +267,7 @@ int main()
     } */
 
     // error: ‘float Rect::m_leftBorder’ is private within this context
-    // переменные/методы класса недоступны вне класса
+    // Переменные/методы класса недоступны вне класса
 
     /**
      * Задание 1.8. Инкапсуляция. Методы для доступа к объектам класса.
@@ -400,10 +399,10 @@ int main()
 
     {
 
-        Rect r1(4, 8, 8, 4);
-        Rect r2(-5, 7, 9, 0);
+        Rect r1(4, 8, 8, 4); // Конструктор с параметрами
+        Rect r2(-5, 7, 9, 0); // Конструктор с параметрами
 
-        Rect r3 = bounding_rect(r1, r2);
+        Rect r3 = bounding_rect(r1, r2); // Конструктор копирования
         print_rect(r3);
 
     }
@@ -482,10 +481,11 @@ int main()
      */
 
     {
-        Barrel alch(5, 0.96f); // бочка со спиртом
+        Barrel alch(5, 0.96f); // Бочка со спиртом
         Barrel water(5, 1.f);
 
         int iteration = 0;
+
         while(alch.get_concentarion() > 0.5)
         {   
             alch.pourOverFromTo(water);
@@ -535,13 +535,13 @@ int main()
      * вашего класса, как это было сделано в прошлом семестре.
      */
 
-    { // TODO: ЗДЕСЬ ОШИБКА
+    {
         #ifndef NDEBUG
             cout << "\n\n" << endl;
 
             Matrix testM1(5, 3, 2);
-            for (int i=0; i<testM1.get_height(); i++) {
-                for (int j=0; j<testM1.get_width(); j++) {
+            for (int i=0; i<testM1.getHeight(); i++) {
+                for (int j=0; j<testM1.getWidth(); j++) {
                     cout << testM1.get(i, j) << " ";
                 }
                 cout << endl;
@@ -550,8 +550,8 @@ int main()
             cout << "\n\n" << endl;
 
             Matrix testM2(5, 3, 0);
-            for (int i=0; i<testM2.get_height(); i++) {
-                for (int j=0; j<testM2.get_width(); j++) {
+            for (int i=0; i<testM2.getHeight(); i++) {
+                for (int j=0; j<testM2.getWidth(); j++) {
                     cout << testM2.get(i, j) << " ";
                 }
                 cout << endl;
@@ -561,12 +561,12 @@ int main()
 
             testM2.set(1, 1, 5);
             cout << testM2.get(1, 1) << endl;
-            cout << "Height: " << testM2.get_height() <<
-            "\nWidth: " << testM2.get_width() << endl;
+            cout << "Height: " << testM2.getHeight() <<
+            "\nWidth: " << testM2.getWidth() << endl;
 
             testM2.negate();
-            for (int i=0; i<testM2.get_height(); i++) {
-                for (int j=0; j<testM2.get_width(); j++) {
+            for (int i=0; i<testM2.getHeight(); i++) {
+                for (int j=0; j<testM2.getWidth(); j++) {
                     cout << testM2.get(i, j) << " ";
                 }
                 cout << endl;
@@ -574,9 +574,9 @@ int main()
 
             cout << "\n\n" << endl;
 
-            testM2.add_in_place(testM1);
-            for (int i=0; i<testM2.get_height(); i++) {
-                for (int j=0; j<testM2.get_width(); j++) {
+            testM2.addInPlace(testM1);
+            for (int i=0; i<testM2.getHeight(); i++) {
+                for (int j=0; j<testM2.getWidth(); j++) {
                     cout << testM2.get(i, j) << " ";
                 }
                 cout << endl;
@@ -588,8 +588,8 @@ int main()
             Matrix testM4(5, 3, 2);
 
             Matrix result = testM3.multiply(testM4);
-            for (int i=0; i<result.get_height(); i++) {
-                for (int j=0; j<result.get_width(); j++) {
+            for (int i=0; i<result.getHeight(); i++) {
+                for (int j=0; j<result.getWidth(); j++) {
                     cout << result.get(i, j) << " ";
                 }
                 cout << endl;
@@ -652,7 +652,7 @@ int main()
 
             const char* strTest = "hey how are you?";
             strTest = "hey how are you?";
-            testStr.set_new_string(strTest);
+            testStr.setNewString(strTest);
             testStr.print();
 
             cout << endl;
@@ -666,7 +666,7 @@ int main()
 
             cout << endl;
 
-            testStr.read_line();
+            testStr.readLine();
             testStr.print();
         #endif
     }
@@ -713,7 +713,7 @@ int main()
     {
         int line_width = 40;
         MyString input;
-        input.read_line();
+        input.readLine();
         Text wrapper(input, line_width);
         Text wrapper2("sdfsdf sdfs ssdf sdf sdfs sfsdf fsf sf sfs sd", line_width);
         wrapper.readLine();

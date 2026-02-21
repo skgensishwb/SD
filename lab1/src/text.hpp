@@ -4,12 +4,12 @@
 
 class Text {
     private:
-        int lenOfString;
-        int arrayWordCount;
-        int arrayWordCapacity;
+        int m_lenOfString;
+        int m_arrayWordCount;
+        int m_arrayWordCapacity;
         
-        int* lenOfWords;
-        char** arrayOfWords;
+        int* m_lenOfWords;
+        char** m_arrayOfWords;
 
     public:
         void readLine();

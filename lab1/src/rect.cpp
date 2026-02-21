@@ -2,7 +2,7 @@
 
 #include "rect.hpp"
 
-using namespace std;
+//using namespace std;
 
 Rect bounding_rect(Rect r1, Rect r2) {
     Rect r3;
@@ -26,29 +26,29 @@ void print_rect(Rect &r) {
         heightWithOutBorders = height-2;
     }
     else {
-        cout << "Something strange.." << endl;
+        std::cout << "Something strange.." << std::endl;
         return;
     }
 
     for (int i=0; i<width; i++) {
-        cout << "\xe2\x80\x94";
+        std::cout << "—";
     }
 
-    cout << endl;
+    std::cout << std::endl;
 
     for (int i=0; i<heightWithOutBorders; i++) {
-        cout << '|';
+        std::cout << '|';
         for (int j=0; j< widthWithOutBorders; j++) {
-            cout << ' ';
+            std::cout << ' ';
         }
-        cout << '|' << endl;
+        std::cout << '|' << std::endl;
     }
 
     for (int i=0; i<width; i++) {
-        cout << "\xe2\x80\x94";
+        std::cout << "\xe2\x80\x94";
     }
 
-    cout << endl;
+    std::cout << std::endl;
 }
 
 int mod(int number) {
@@ -106,8 +106,8 @@ void Rect::set_height(int amount) {
 void Rect::set_all(int left, int right, int top, int bottom) {
     m_x = left;
     m_y = bottom;
-    m_width = right - left;
-    m_height = top - bottom;
+    m_width = mod(right - left);
+    m_height = mod(top - bottom);
 }
 
 void Rect::inflate(int amount) {
@@ -138,17 +138,16 @@ void Rect::inflate(int d_left, int d_right, int d_top, int d_bottom) {
 }
 
 void Rect::move(int moveX, int moveY) {
-    // Старая реализация пересчитывала все 4 границы через set_all.
-    // Новая — просто сдвигает точку:
+    // Старая реализация пересчитывала все 4 границы через set_all
     m_x += moveX;
     m_y += moveY;
 }
 
 void Rect::showLRTB() {
-    cout << "Left: " << get_left() << endl;
-    cout << "Right: " << get_right() << endl;
-    cout << "Top: " << get_top() << endl;
-    cout << "Bottom: " << get_bottom() << endl;
+    std::cout << "Left: " << get_left() << std::endl;
+    std::cout << "Right: " << get_right() << std::endl;
+    std::cout << "Top: " << get_top() << std::endl;
+    std::cout << "Bottom: " << get_bottom() << std::endl;
 }
 
 // Старая реализация:
@@ -167,7 +166,7 @@ Rect::Rect(int left, int right, int top, int bottom)
       m_height(top - bottom)
 {
     #ifndef NDEBUG
-        cout << "The constructor with parameters is called: " << this << endl;
+        std::cout << "The constructor with parameters is called: " << this << std::endl;
     #endif
 }
 
@@ -182,7 +181,7 @@ Rect::Rect()
     : m_x(0), m_y(0), m_width(0), m_height(0)
 {
     #ifndef NDEBUG
-        cout << "Explicit default constructor called: " << this << endl;
+        std::cout << "Explicit default constructor called: " << this << std::endl;
     #endif
 }
 
@@ -201,12 +200,12 @@ Rect::Rect(const Rect& other)
       m_height(other.m_height)
 {
     #ifndef NDEBUG
-        cout << "Copy constructor 'called by the compiler': " << this << endl;
+        std::cout << "Copy constructor 'called by the compiler': " << this << std::endl;
     #endif
 }
 
 Rect::~Rect() {
     #ifndef NDEBUG
-        cout << "The destructor has been called" << endl;
+        std::cout << "The destructor has been called" << std::endl;
     #endif
 }

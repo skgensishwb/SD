@@ -9,8 +9,8 @@ class Rect {
         // int m_bottomBorder;
 
         // Новое представление: левая нижняя точка + размеры
-        int m_x;      // координата X левой нижней точки (== left)
-        int m_y;      // координата Y левой нижней точки (== bottom)
+        int m_x; // координата X левой нижней точки (left)
+        int m_y; // координата Y левой нижней точки (bottom)
         int m_width;
         int m_height;
 

@@ -2,105 +2,104 @@
 
 #include "mystring.hpp"
 
-using namespace std;
-
 char MyString::get(int i) { 
-    if (i < len(this->userString)) {
-        return userString[i];
+    if (i < len(this->m_userString)) {
+        return m_userString[i];
     }
-    cout << "\nArray out of bounds\n" << endl;
+    std::cout << "\nArray out of bounds\n" << std::endl;
     return '\0';
 }
 
 void MyString::set(int i, char c) {
-    int lenght = len(this->userString);
+    int lenght = len(this->m_userString);
     if (i < lenght) {
-        userString[i] = c;
+        m_userString[i] = c;
     }
     else if (i == lenght) {
-        int newSize = size + 1;
+        int newSize = m_size + 1;
 
         char* newString = new char[newSize];
         for (int j = 0; j < newSize; j++) {
-                newString[j] = userString[j];
+                newString[j] = m_userString[j];
             }
         newString[i] = c;
+        newString[newSize] = '\0';
 
-        delete[] userString;
-        userString = newString;
+        delete[] m_userString;
+        m_userString = newString;
     }
     else {
-        cout << "\nArray out of bounds\n" << endl;
+        std::cout << "\nArray out of bounds\n" << std::endl;
     }
 }
 
-void MyString::set_new_string(const char *str) { // расширение массива
+void MyString::setNewString(const char *str) {
     copyString(str);
 }
 
 void MyString::print() {
-    if (userString == nullptr) {
-        cout << "\nNullptr\n" << endl;
+    if (m_userString == nullptr) {
+        std::cout << "\nNullptr\n" << std::endl;
     } else {
-        int lenght = len(this->userString);
+        int lenght = len(this->m_userString);
 
         for (int i=0; i< lenght; i++) {
-            cout << this->userString[i];
+            std::cout << this->m_userString[i];
         }
 
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
-void MyString::read_line() {
+void MyString::readLine() {
     clearString();
 
-    cout << "Input a line: ";
+    std::cout << "Input a line: ";
 
     char c;
-    int newSize = size;
+    int newSize = m_size;
     int capacity = 0;
 
-    while (cin.get(c) && c != '\n') {
+    while (std::cin.get(c) && c != '\n') {
         if (capacity + 1 >= newSize) {
             newSize *= 2;
 
             char* newString = new char[newSize];
 
             for (int i = 0; i < capacity; i++) {
-                newString[i] = userString[i];
+                newString[i] = m_userString[i];
             }
 
-            delete[] userString;
-            userString = newString;
+            delete[] m_userString;
+            m_userString = newString;
         }
-        userString[capacity++] = c;
+        m_userString[capacity++] = c;
     }
 
-    userString[capacity] = '\0';
-    size = newSize;
+    m_userString[capacity] = '\0';
+    m_size = newSize;
 }
 
 char* MyString::getString() {
-    return userString;
+    return m_userString;
 }
 
 void MyString::clearString() {
-    size = 0;
+    m_size = 0;
 
-    char* newString = new char[size + 1];
+    char* newString = new char[m_size + 1];
     newString[0] = '\0';
 
-    delete[] userString;
+    delete[] m_userString;
 
-    userString = newString;
-    size += 1;
+    m_userString = newString;
+    m_size += 1;
 }
 
 void MyString::copyString(const char* newString) {
     clearString();
     
-    int newSize = this->size;
+    int newSize = this->m_size;
     int sizeOfNewStr = len(newString);
 
     while(newSize < sizeOfNewStr + 1) {
@@ -113,9 +112,9 @@ void MyString::copyString(const char* newString) {
     }
     buffer[sizeOfNewStr] = '\0';
 
-    delete[] userString;
-    size = newSize;
-    userString = buffer;
+    delete[] m_userString;
+    m_size = newSize;
+    m_userString = buffer;
 }
 
 int MyString::len(const char* string) {
@@ -126,32 +125,26 @@ int MyString::len(const char* string) {
     return length;
 }
 
-MyString::MyString() : size(0), userString(nullptr) {
+MyString::MyString() : m_size(0), m_userString(nullptr) {
     clearString();
 }
 
-MyString::MyString(const char* stringCopy) : size(0) {
+MyString::MyString(const char* stringCopy) : m_size(0) {
     if (stringCopy == nullptr) {
-        cout << "\nNullptr\n" << endl;
+        std::cout << "\nNullptr\n" << std::endl;
     } else {
-        
-        clearString();
-
         copyString(stringCopy);
     }
 }
 
-MyString::MyString(const MyString& other) : size(0) {
-    if (other.userString == nullptr) {
-        cout << "\nNullptr\n" << endl;
+MyString::MyString(const MyString& other) : m_size(0) {
+    if (other.m_userString == nullptr) {
+        std::cout << "\nNullptr\n" << std::endl;
     } else {
-        
-        clearString();
-
-        copyString(other.userString);
+        copyString(other.m_userString);
     }
 }
 
 MyString::~MyString() {
-    delete [] userString;
+    delete [] m_userString;
 }

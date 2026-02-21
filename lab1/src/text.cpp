@@ -42,24 +42,24 @@ void Text::addWord(char* word, int len) {
         return;
     }
 
-    if (arrayWordCount >= arrayWordCapacity) {
-        int newCap = (arrayWordCapacity == 0) ? 4 : arrayWordCapacity * 2;
+    if (m_arrayWordCount >= m_arrayWordCapacity) {
+        int newCap = (m_arrayWordCapacity == 0) ? 4 : m_arrayWordCapacity * 2;
 
         char** newArrayOfWords = new char*[newCap];
         int* newLenOfWords = new int[newCap];
 
-        for (int i=0; i<arrayWordCount ; i++) {
-            newArrayOfWords[i] = arrayOfWords[i];
-            newLenOfWords[i] = lenOfWords[i];
+        for (int i=0; i<m_arrayWordCount ; i++) {
+            newArrayOfWords[i] = m_arrayOfWords[i];
+            newLenOfWords[i] = m_lenOfWords[i];
         }
 
-        delete[] arrayOfWords;
-        arrayOfWords = newArrayOfWords;
+        delete[] m_arrayOfWords;
+        m_arrayOfWords = newArrayOfWords;
 
-        delete[] lenOfWords;
-        lenOfWords = newLenOfWords;
+        delete[] m_lenOfWords;
+        m_lenOfWords = newLenOfWords;
 
-        arrayWordCapacity = newCap;
+        m_arrayWordCapacity = newCap;
 
     }
 
@@ -69,9 +69,9 @@ void Text::addWord(char* word, int len) {
     }
     newWord[len] = '\0';
 
-    lenOfWords[arrayWordCount] = len;
-    arrayOfWords[arrayWordCount] = newWord;
-    arrayWordCount++;
+    m_lenOfWords[m_arrayWordCount] = len;
+    m_arrayOfWords[m_arrayWordCount] = newWord;
+    m_arrayWordCount++;
 }
 
 void Text::splitStringIntoWords(const char* stringToSplit, int len) {
@@ -117,51 +117,51 @@ void Text::splitStringIntoWords(const char* stringToSplit, int len) {
 }
 
 void Text::clear() {
-    for (int i=0; i < arrayWordCount; i++) {
-        delete[] arrayOfWords[i];
+    for (int i=0; i < m_arrayWordCount; i++) {
+        delete[] m_arrayOfWords[i];
     }
 
-    delete[] lenOfWords;
-    delete[] arrayOfWords;
-    lenOfWords = nullptr;
-    arrayOfWords = nullptr;
-    arrayWordCount = 0 ;
-    arrayWordCapacity = 0 ;
+    delete[] m_lenOfWords;
+    delete[] m_arrayOfWords;
+    m_lenOfWords = nullptr;
+    m_arrayOfWords = nullptr;
+    m_arrayWordCount = 0 ;
+    m_arrayWordCapacity = 0 ;
 }
 
 void Text::printLine() {
     cout << endl;
 
     int lenString = 0; 
-    for (int i=0;  i< arrayWordCount; i++) {
-        if (lenOfWords[i] > lenOfString) {
+    for (int i=0;  i< m_arrayWordCount; i++) {
+        if (m_lenOfWords[i] > m_lenOfString) {
             if (lenString != 0) {
                 cout << endl;
             }
             int pos = 0;
-            while (pos < lenOfWords[i]) {
-                int chunk = lenOfWords[i] - pos;
-                if (chunk > lenOfString) chunk = lenOfString;
+            while (pos < m_lenOfWords[i]) {
+                int chunk = m_lenOfWords[i] - pos;
+                if (chunk > m_lenOfString) chunk = m_lenOfString;
                 for (int j = 0; j < chunk; j++) {
-                    cout << arrayOfWords[i][pos + j];
+                    cout << m_arrayOfWords[i][pos + j];
                 }
                 pos += chunk;
-                if (pos < lenOfWords[i]) cout << endl;
+                if (pos < m_lenOfWords[i]) cout << endl;
                 lenString = chunk;
             }
         }
         else {
-            if (lenString + lenOfWords[i] > lenOfString) {
+            if (lenString + m_lenOfWords[i] > m_lenOfString) {
                 cout << endl;
                 lenString = 0;
             }
 
-            for (int j=0; j < lenOfWords[i]; j++) {
-                cout <<  arrayOfWords[i][j];
+            for (int j=0; j < m_lenOfWords[i]; j++) {
+                cout <<  m_arrayOfWords[i][j];
                 lenString++;
             }
 
-            if (lenString < lenOfString) {
+            if (lenString < m_lenOfString) {
                 cout << ' ';
                 lenString ++;
             }
@@ -172,18 +172,18 @@ void Text::printLine() {
 }
 
 Text::Text()
-    : lenOfString(40),
-      arrayWordCount(0),
-      arrayWordCapacity(0),
-      lenOfWords(nullptr),
-      arrayOfWords(nullptr) {}
+    : m_lenOfString(40),
+      m_arrayWordCount(0),
+      m_arrayWordCapacity(0),
+      m_lenOfWords(nullptr),
+      m_arrayOfWords(nullptr) {}
 
 Text::Text(const char* input, int maxWidth)
-    : lenOfString(maxWidth),
-      arrayWordCount(0),
-      arrayWordCapacity(0),
-      lenOfWords(nullptr),
-      arrayOfWords(nullptr)
+    : m_lenOfString(maxWidth),
+      m_arrayWordCount(0),
+      m_arrayWordCapacity(0),
+      m_lenOfWords(nullptr),
+      m_arrayOfWords(nullptr)
 {
     int inputLen = 0;
     while (input[inputLen] != '\0') inputLen++;
@@ -191,11 +191,11 @@ Text::Text(const char* input, int maxWidth)
 }
 
 Text::Text(MyString& input, int len)
-    : lenOfString(len),
-      arrayWordCount(0),
-      arrayWordCapacity(0),
-      lenOfWords(nullptr),
-      arrayOfWords(nullptr)
+    : m_lenOfString(len),
+      m_arrayWordCount(0),
+      m_arrayWordCapacity(0),
+      m_lenOfWords(nullptr),
+      m_arrayOfWords(nullptr)
 {
     char* str = input.getString();
     int inputLen = 0;

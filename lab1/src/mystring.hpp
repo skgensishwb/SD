@@ -2,14 +2,14 @@
 
 class MyString {
     private:
-        int size;
-        char* userString;
+        int m_size;
+        char* m_userString;
     public:
         char get(int i); // получение i-того элемента строки;
         void set(int i, char c); // установка i-того элемента строки;
-        void set_new_string(const char *str); // замена текущего содержимого на новое;
+        void setNewString(const char *str); // замена текущего содержимого на новое;
         void print(); // вывод строки на консоль;
-        void read_line(); 
+        void readLine(); 
         /* 
             замена текущего содержимого строки на строку, считанную 
             с консоли (неопределенного размера).

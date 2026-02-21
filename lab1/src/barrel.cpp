@@ -2,8 +2,6 @@
 
 #include "barrel.hpp"
 
-using namespace std;
-
 float Barrel::get_concentarion() {
     return (this->m_concentration);
 }
