@@ -10,11 +10,11 @@ bool BaseFile::isOpen() {
 }
 
 bool BaseFile::canRead() {
-    return (m_file != nullptr) && (access(m_path.c_str(), R_OK) == 0); //
+    return (m_file != nullptr) && (access(m_path.cStr(), R_OK) == 0); //
 }
 
 bool BaseFile::canWrite() {
-    return (m_file != nullptr) && (access(m_path.c_str(), W_OK) == 0); //
+    return (m_file != nullptr) && (access(m_path.cStr(), W_OK) == 0); //
 }
 
 size_t BaseFile::writeRaw(const void *buf, size_t nBytes) {

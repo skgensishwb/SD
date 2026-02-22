@@ -2,6 +2,10 @@
 
 #include "mystring.hpp"
 
+const char* MyString::cStr() const {
+    return m_userString ? m_userString : "";
+}
+
 char MyString::get(int i) { 
     if (i < len(this->m_userString)) {
         return m_userString[i];

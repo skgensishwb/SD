@@ -5,6 +5,8 @@ class MyString {
         int m_size;
         char* m_userString;
     public:
+        const char* cStr() const;
+
         char get(int i); // получение i-того элемента строки;
         void set(int i, char c); // установка i-того элемента строки;
         void setNewString(const char *str); // замена текущего содержимого на новое;
