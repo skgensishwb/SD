@@ -1,6 +1,8 @@
 #include <iostream>
+#include <cstdio>
 
 #include "../../lab1/src/mystring.hpp"
+#include "basefile.hpp"
 
 using namespace std;
 
@@ -117,6 +119,36 @@ int main() {
      *
      * Проверьте работу этого класса.
      */
+
+    {
+        // Запись в файл
+        BaseFile writer("test.bin", "wb");
+        writer.writeRaw("Hello, ", 7);
+        writer.writeRaw("World!", 6);
+        std::cout << "Записано 13 байт, tell = " << writer.tell() << std::endl;
+
+        // Закрываем writer до чтения
+        fclose(writer.m_file);
+        writer.m_file = nullptr;
+
+        // Чтение из файла
+        BaseFile reader("test.bin", "rb");
+        char buf[20] = {};
+        reader.readRaw(buf, 7);
+        std::cout << "Первое чтение: " << buf << std::endl;
+
+        reader.readRaw(buf + 7, 6);
+        std::cout << "Всё вместе: " << buf << std::endl;
+
+        // Seek на начало и read
+        reader.seek(0);
+        char buf2[20] = {};
+        reader.read(buf2, 13);
+        std::cout << "После seek(0): " << buf2 << std::endl;
+        std::cout << "tell = " << reader.tell() << std::endl;
+
+        remove("test.bin"); 
+    }
 
     /**
      * Задание 2.2. Производные классы.
