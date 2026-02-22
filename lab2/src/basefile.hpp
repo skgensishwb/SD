@@ -1,9 +1,10 @@
 #pragma once
 
 class BaseFile {
-    public:
+    protected:
         FILE* m_file;
         MyString m_path;
+
     public:
         bool isOpen();
         bool canRead();
@@ -20,4 +21,25 @@ class BaseFile {
         BaseFile(FILE* filePtr);
 
         ~BaseFile();
+};
+
+class Base32File : public BaseFile {
+    protected:
+        char m_table[33];
+
+    protected:
+        int encoded32Size(int rawSize);
+        int decoded32Size(int encodeSize);
+        int encode32(const char *rawData, int rawSize, MyString* dst);
+        int decode32(const char *encodedData, int encodedSize, MyString* dst);
+
+    public:
+        size_t write(const void *buf, size_t nBytes);
+        size_t read(void *buf, size_t maxBytes);
+
+        Base32File();
+        Base32File(const char* filePath, const char* mode);
+        Base32File(const char* filePath, const char* mode, const char* table);
+
+        ~Base32File();
 };

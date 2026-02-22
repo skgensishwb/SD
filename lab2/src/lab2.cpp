@@ -120,35 +120,73 @@ int main() {
      * Проверьте работу этого класса.
      */
 
+     std::cout << "===== Задание 2.1: BaseFile =====" << std::endl;
+
+    // Конструктор по умолчанию
+    std::cout << "\n--- Конструктор по умолчанию ---" << std::endl;
     {
-        // Запись в файл
+        BaseFile f;
+        std::cout << "isOpen: " << f.isOpen() << std::endl; // 0
+    }
+
+    // Конструктор с путём и режимом
+    std::cout << "\n--- Конструктор с параметрами ---" << std::endl;
+    {
+        BaseFile f("test.bin", "wb");
+        std::cout << "isOpen: " << f.isOpen() << std::endl;   // 1
+        std::cout << "canWrite: " << f.canWrite() << std::endl; // 1
+    } // деструктор закрывает файл
+
+    // Конструктор с FILE*
+    std::cout << "\n--- Конструктор с FILE* ---" << std::endl;
+    {
+        FILE* fp = fopen("test.bin", "rb");
+        BaseFile f(fp);
+        std::cout << "isOpen: " << f.isOpen() << std::endl; // 1
+    } // деструктор закрывает файл
+
+    // Последовательная запись (writeRaw) и чтение (readRaw)
+    std::cout << "\n--- writeRaw / readRaw ---" << std::endl;
+    {
         BaseFile writer("test.bin", "wb");
         writer.writeRaw("Hello, ", 7);
         writer.writeRaw("World!", 6);
-        std::cout << "Записано 13 байт, tell = " << writer.tell() << std::endl;
-
-        // Закрываем writer до чтения
-        fclose(writer.m_file);
-        writer.m_file = nullptr;
-
-        // Чтение из файла
+        std::cout << "tell после записи: " << writer.tell() << std::endl; // 13
+    }
+    {
         BaseFile reader("test.bin", "rb");
         char buf[20] = {};
-        reader.readRaw(buf, 7);
-        std::cout << "Первое чтение: " << buf << std::endl;
-
-        reader.readRaw(buf + 7, 6);
-        std::cout << "Всё вместе: " << buf << std::endl;
-
-        // Seek на начало и read
-        reader.seek(0);
-        char buf2[20] = {};
-        reader.read(buf2, 13);
-        std::cout << "После seek(0): " << buf2 << std::endl;
-        std::cout << "tell = " << reader.tell() << std::endl;
-
-        remove("test.bin"); 
+        reader.readRaw(buf, 7);       // "Hello, "
+        reader.readRaw(buf + 7, 6);   // "World!"
+        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "Hello, World!"
     }
+
+    // seek и tell
+    std::cout << "\n--- seek / tell ---" << std::endl;
+    {
+        BaseFile f("test.bin", "rb");
+        f.seek(7);
+        std::cout << "tell после seek(7): " << f.tell() << std::endl; // 7
+        char buf[7] = {};
+        f.readRaw(buf, 6);
+        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "World!"
+    }
+
+    // read и write (обёртки над readRaw/writeRaw)
+    std::cout << "\n--- read / write ---" << std::endl;
+    {
+        BaseFile writer("test2.bin", "wb");
+        writer.write("Test", 4);
+    }
+    {
+        BaseFile reader("test2.bin", "rb");
+        char buf[5] = {};
+        reader.read(buf, 4);
+        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "Test"
+    }
+
+    remove("test.bin");
+    remove("test2.bin");
 
     /**
      * Задание 2.2. Производные классы.
@@ -171,6 +209,13 @@ int main() {
      * Проверьте работу производных классов.
      */
 
+    /*
+        Способы наследования:
+            1) public-наследование (все, что было public или protected, так и останется)
+            2) protected-наследование (все public --> protected)
+            3) private-наследование (public, protected --> private)
+    */ 
+
     /**
      * Задание 2.2.1. Base32 кодировщик/декодировщик.
      *
@@ -189,6 +234,72 @@ int main() {
      * Добавьте возможность пользователю передать в конструктор таблицу
      * кодировки, по умолчанию используется таблица "A..Z1..6".
      */
+
+    std::cout << "\n\n===== Задание 2.2.1: Base32File =====" << std::endl;
+
+    // Запись и чтение с таблицей по умолчанию (A..Z1..6)
+    std::cout << "\n--- Таблица по умолчанию ---" << std::endl;
+    {
+        Base32File writer("b32.bin", "wb");
+        writer.write("Hello", 5);
+    }
+    {
+        Base32File reader("b32.bin", "rb");
+        char buf[10] = {};
+        size_t r = reader.read(buf, 5);
+        buf[r] = '\0';
+        std::cout << "Декодировано: \"" << buf << "\"" << std::endl; // "Hello"
+    }
+
+    // Последовательная запись и чтение
+    std::cout << "\n--- Последовательные вызовы write/read ---" << std::endl;
+    {
+        Base32File writer("b32seq.bin", "wb");
+        writer.write("AB", 2);
+        writer.write("CD", 2);
+    }
+    {
+        Base32File reader("b32seq.bin", "rb");
+        char buf1[10] = {}, buf2[10] = {};
+        reader.read(buf1, 2); buf1[2] = '\0';
+        reader.read(buf2, 2); buf2[2] = '\0';
+        std::cout << "Часть 1: \"" << buf1 << "\"" << std::endl; // "AB"
+        std::cout << "Часть 2: \"" << buf2 << "\"" << std::endl; // "CD"
+    }
+
+    // Пользовательская таблица
+    std::cout << "\n--- Пользовательская таблица ---" << std::endl;
+    const char* myTable = "0123456789abcdefghijklmnopqrstuv";
+    {
+        Base32File writer("b32custom.bin", "wb", myTable);
+        writer.write("Hello", 5);
+    }
+    {
+        Base32File reader("b32custom.bin", "rb", myTable);
+        char buf[10] = {};
+        size_t r = reader.read(buf, 5);
+        buf[r] = '\0';
+        std::cout << "Декодировано: \"" << buf << "\"" << std::endl; // "Hello"
+    }
+
+    // Сравнение: одни и те же данные, разные таблицы — разный результат в файле
+    std::cout << "\n--- Сравнение закодированных данных ---" << std::endl;
+    {
+        BaseFile f1("b32.bin", "rb");
+        char raw1[20] = {};
+        f1.readRaw(raw1, 19);
+        std::cout << "Таблица A..Z1..6:       \"" << raw1 << "\"" << std::endl;
+    }
+    {
+        BaseFile f2("b32custom.bin", "rb");
+        char raw2[20] = {};
+        f2.readRaw(raw2, 19);
+        std::cout << "Таблица 0..9a..v:       \"" << raw2 << "\"" << std::endl;
+    }
+
+    remove("b32.bin");
+    remove("b32seq.bin");
+    remove("b32custom.bin");
 
     /**
      * Задание 2.2.2. RLE-сжатие.
