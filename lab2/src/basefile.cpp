@@ -446,3 +446,9 @@ long fileSize(const char* path) {
     fclose(f);
     return s;
 }
+
+void writeInt(BaseFile &file, int n) {
+    char str[32];
+    int len = intToStr(n, str, 31);
+    file.write(str, len);
+}

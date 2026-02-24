@@ -455,6 +455,50 @@ int main() {
         }
     } */
 
+    {
+        int number = 123456;
+
+        // Создаём три файла разных типов
+        {
+            BaseFile bf("num_base.bin", "wb");
+            Base32File b32f("num_b32.bin", "wb");
+            RleFile rf("num_rle.bin", "wb");
+
+            // Вызываем одну и ту же функцию для всех трёх объектов
+            writeInt(bf, number);    // передаём BaseFile
+            writeInt(b32f, number);  // передаём Base32File как BaseFile&
+            writeInt(rf, number);    // передаём RleFile как BaseFile&
+        }
+
+        // Проверяем что записалось
+        std::cout << "\n--- Что лежит в файлах (raw) ---" << std::endl;
+        {
+            BaseFile f1("num_base.bin", "rb");
+            char buf[64] = {};
+            size_t n = f1.readRaw(buf, 63);
+            buf[n] = '\0';
+            std::cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << std::endl;
+        }
+        {
+            BaseFile f2("num_b32.bin", "rb");
+            char buf[64] = {};
+            size_t n = f2.readRaw(buf, 63);
+            buf[n] = '\0';
+            std::cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << std::endl;
+        }
+        {
+            BaseFile f3("num_rle.bin", "rb");
+            char buf[64] = {};
+            size_t n = f3.readRaw(buf, 63);
+            buf[n] = '\0';
+            std::cout << "RleFile:    \"" << buf << "\" (" << fileSize("num_rle.bin") << " байт)" << std::endl;
+        }
+
+        remove("num_base.bin");
+        remove("num_b32.bin");
+        remove("num_rle.bin");
+    }
+
     /**
      * Задание 2.5. Передача объекта по ссылке / указателю.
      *

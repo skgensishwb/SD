@@ -65,3 +65,5 @@ class RleFile : public BaseFile {
 
 int intToStr(int number, char* buf, int bufSize);
 long fileSize(const char* path);
+
+void writeInt(BaseFile &file, int n);
