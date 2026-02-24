@@ -62,3 +62,6 @@ class RleFile : public BaseFile {
 
         ~RleFile();
 };
+
+int intToStr(int number, char* buf, int bufSize);
+long fileSize(const char* path);

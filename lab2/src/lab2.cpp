@@ -360,6 +360,74 @@ int main() {
      * запись.
      */
 
+    {
+        int number = 123456;
+        char str[32];
+        int len = intToStr(number, str, 31);
+
+        std::cout << "Число: " << number << ", строка: \"" << str << "\"" << std::endl;
+
+        // Запись — один и тот же код, только имя объекта меняется
+        {
+            BaseFile bf("num_base.bin", "wb");
+            bf.write(str, len);                    // BaseFile::write
+        }
+        {
+            Base32File b32f("num_b32.bin", "wb");
+            b32f.write(str, len);                  // Base32File::write
+        }
+        {
+            RleFile rf("num_rle.bin", "wb");
+            rf.write(str, len);                    // RleFile::write
+        }
+
+        // Что лежит в файлах (raw)
+        std::cout << "\n--- Raw содержимое файлов ---" << std::endl;
+        {
+            BaseFile f("num_base.bin", "rb");
+            char buf[64] = {};
+            size_t n = f.readRaw(buf, 63);
+            buf[n] = '\0';
+            std::cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << std::endl;
+        }
+        {
+            BaseFile f("num_b32.bin", "rb");
+            char buf[64] = {};
+            size_t n = f.readRaw(buf, 63);
+            buf[n] = '\0';
+            std::cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << std::endl;
+        }
+        std::cout << "RleFile:    " << fileSize("num_rle.bin") << " байт (бинарные)" << std::endl;
+
+        // Чтение обратно через соответствующие классы
+        std::cout << "\n--- Декодированное ---" << std::endl;
+        {
+            BaseFile f("num_base.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, len);           // BaseFile::read
+            buf[n] = '\0';
+            std::cout << "BaseFile:   \"" << buf << "\"" << std::endl;
+        }
+        {
+            Base32File f("num_b32.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, len);           // Base32File::read
+            buf[n] = '\0';
+            std::cout << "Base32File: \"" << buf << "\"" << std::endl;
+        }
+        {
+            RleFile f("num_rle.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, len);           // RleFile::read
+            buf[n] = '\0';
+            std::cout << "RleFile:    \"" << buf << "\"" << std::endl;
+        }
+
+        remove("num_base.bin");
+        remove("num_b32.bin");
+        remove("num_rle.bin");
+    }
+
     /* {
         BaseFile bf(...);
         Base32File b32f(...);

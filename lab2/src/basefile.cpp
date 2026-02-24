@@ -406,3 +406,43 @@ RleFile::RleFile(const char* filePath, const char* mode)
 RleFile::~RleFile() {
     std::cout << "RleFile: Destructor" << std::endl;
 }
+
+int intToStr(int number, char* buf, int bufSize) {
+    int i = 0;
+    bool negative = false;
+
+    if (number < 0) {
+        negative = true;
+        number = -number;
+    }
+    if (number == 0) {
+        buf[i++] = '0';
+    }
+    // Собираем цифры в обратном порядке
+    char tmp[20];
+    int count = 0;
+    while (number > 0 && count < 20) {
+        tmp[count++] = '0' + (number % 10);
+        number /= 10;
+    }
+    // Знак минуса
+    if (negative && i < bufSize) {
+        buf[i++] = '-';
+    }
+    // Переворачиваем цифры
+    for (int j = count - 1; j >= 0 && i < bufSize; j--) {
+        buf[i++] = tmp[j];
+    }
+    buf[i] = '\0';
+    return i;
+}
+
+// Вспомогательная: размер файла
+long fileSize(const char* path) {
+    FILE* f = fopen(path, "rb");
+    if (!f) return -1;
+    fseek(f, 0, SEEK_END);
+    long s = ftell(f);
+    fclose(f);
+    return s;
+}
