@@ -24,6 +24,7 @@ size_t BaseFile::writeRaw(const void *buf, size_t nBytes) {
 size_t BaseFile::readRaw(void *buf, size_t maxBytes) {
     return fread(buf, 1, maxBytes, m_file);
 }
+
 long BaseFile::tell() {
     return ftell(m_file);
 }
@@ -121,7 +122,7 @@ int Base32File::encode32(const char *rawData, int rawSize, MyString* dst) {
 }
 
 int Base32File::decode32(const char *encodedData, int encodedSize, MyString* dst) { // записывает в dst
-    if (encodedData == nullptr || encodedData == nullptr) {
+    if (encodedData == nullptr || dst == nullptr) {
         return 1;
     }
     if (encodedSize < 0) {
@@ -261,4 +262,147 @@ Base32File::Base32File(const char* filePath, const char* mode, const char* table
 
 Base32File::~Base32File() {
     std::cout << "Base32File: Destructor" << std::endl;
+}
+
+// -------------------------------------------------------------------------------------- //
+
+size_t RleFile::write(const void *buf, size_t nBytes) {
+    if (!canWrite() || nBytes == 0) {
+        return 0;
+    }
+
+    char* encoded = nullptr;
+    int encodedSize = 0;
+
+    int result = encodeRLE((const char*)buf, (int)nBytes, &encoded, &encodedSize);
+    if (result != 0) {
+        return 0;
+    }
+
+    size_t written = writeRaw(encoded, encodedSize);
+    delete[] encoded;
+
+    // Если всё записали — значит все исходные байты были обработаны
+    if ((int)written == encodedSize) {
+        return nBytes;
+    }
+
+    return 0;
+}
+
+size_t RleFile::read(void *buf, size_t maxBytes) {
+    if (!canRead() || maxBytes == 0) {
+        return 0;
+    }
+
+    size_t decoded = 0;
+    char* out = (char*)buf;
+
+    // Сначала дописываем остаток от предыдущей незавершённой серии
+    while (m_pendingCount > 0 && decoded < maxBytes) {
+        out[decoded] = m_pendingByte;
+        decoded++;
+        m_pendingCount--;
+    }
+
+    // Читаем новые пары [count][byte] из файла
+    char pair[2];
+    while (decoded < maxBytes) {
+        size_t r = readRaw(pair, 2);
+        if (r < 2) {
+            break; // конец файла
+        }
+
+        int count = (unsigned char)pair[0];
+        char byte = pair[1];
+
+        int j = 0;
+        while (j < count && decoded < maxBytes) {
+            out[decoded] = byte;
+            decoded++;
+            j++;
+        }
+
+        // Если серия не уместилась целиком — сохраняем остаток
+        if (j < count) {
+            m_pendingCount = (unsigned char)(count - j);
+            m_pendingByte = byte;
+        }
+    }
+
+    return decoded;
+}
+
+int RleFile::encodeRLE(const char *rawData, int rawSize, char** dst, int* dstSize) {
+    if (rawData == nullptr || rawSize <= 0 || dst == nullptr || dstSize == nullptr) {
+        return 1;
+    }
+
+    // В худшем случае каждый байт даёт пару [1][byte], т.е. размер * 2
+    char* buf = new char[rawSize * 2];
+    int outIndex = 0;
+
+    int i = 0;
+    while (i < rawSize) {
+        char current = rawData[i];
+        int count = 1;
+
+        // Считаем сколько подряд одинаковых байт (максимум 255)
+        while (i + count < rawSize && rawData[i + count] == current && count < 255) {
+            count++;
+        }
+
+        buf[outIndex++] = (char)count;
+        buf[outIndex++] = current;
+        i += count;
+    }
+
+    *dst = buf;
+    *dstSize = outIndex;
+    return 0;
+}
+
+int RleFile::decodeRLE(const char *encodedData, int encodedSize, char** dst, int* dstSize) {
+    if (encodedData == nullptr || encodedSize <= 0 || dst == nullptr || dstSize == nullptr) {
+        return 1;
+    }
+
+    // Сначала посчитаем итоговый размер
+    int totalSize = 0;
+    for (int i = 0; i < encodedSize; i += 2) {
+        if (i + 1 >= encodedSize) {
+            return 2; // нечётное количество байт — битые данные
+        }
+        totalSize += (unsigned char)encodedData[i];
+    }
+
+    char* buf = new char[totalSize];
+    int outIndex = 0;
+
+    for (int i = 0; i < encodedSize; i += 2) {
+        int count = (unsigned char)encodedData[i];
+        char byte = encodedData[i + 1];
+
+        for (int j = 0; j < count; j++) {
+            buf[outIndex++] = byte;
+        }
+    }
+
+    *dst = buf;
+    *dstSize = outIndex;
+    return 0;
+}
+
+RleFile::RleFile() : BaseFile(), m_pendingCount(0), m_pendingByte(0) {
+    std::cout << "RleFile: Default constructor" << std::endl;
+}
+
+RleFile::RleFile(const char* filePath, const char* mode)
+    : BaseFile(filePath, mode), m_pendingCount(0), m_pendingByte(0)
+{
+    std::cout << "RleFile: Constructor with parameters" << std::endl;
+}
+
+RleFile::~RleFile() {
+    std::cout << "RleFile: Destructor" << std::endl;
 }

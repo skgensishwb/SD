@@ -20,17 +20,19 @@ void MyString::set(int i, char c) {
         m_userString[i] = c;
     }
     else if (i == lenght) {
-        int newSize = m_size + 1;
+        int newSize = lenght + 2;
 
         char* newString = new char[newSize];
-        for (int j = 0; j < m_size; j++) {
+
+        for (int j = 0; j < lenght; j++) {
                 newString[j] = m_userString[j];
             }
         newString[i] = c;
-        newString[newSize] = '\0';
+        newString[lenght + 1] = '\0';
 
         delete[] m_userString;
         m_userString = newString;
+        m_size = newSize;
     }
     else {
         std::cout << "\nArray out of bounds\n" << std::endl;
@@ -66,7 +68,7 @@ void MyString::readLine() {
 
     while (std::cin.get(c) && c != '\n') {
         if (capacity + 1 >= newSize) {
-            newSize *= 2;
+            newSize = (newSize < 1) ? 2 : newSize * 2;
 
             char* newString = new char[newSize];
 
@@ -95,15 +97,9 @@ void MyString::clearString() {
     m_userString[0] = '\0';
 }
 
-void MyString::copyString(const char* newString) {
-    clearString();
-    
-    int newSize = this->m_size;
+void MyString::copyString(const char* newString) {  
     int sizeOfNewStr = len(newString);
-
-    while(newSize < sizeOfNewStr + 1) {
-        newSize += 10;
-    }
+    int newSize = sizeOfNewStr + 1;
 
     char* buffer = new char[newSize];
     for (int i=0; i<sizeOfNewStr; i++) {
@@ -128,9 +124,10 @@ MyString::MyString() : m_size(0), m_userString(nullptr) {
     clearString();
 }
 
-MyString::MyString(const char* stringCopy) : m_size(0) {
+MyString::MyString(const char* stringCopy) : m_size(0), m_userString(nullptr) {
     if (stringCopy == nullptr) {
         std::cout << "\nNullptr\n" << std::endl;
+        clearString();  // инициализируем пустой строкой, чтобы объект был валидным
     } else {
         copyString(stringCopy);
     }
@@ -139,6 +136,7 @@ MyString::MyString(const char* stringCopy) : m_size(0) {
 MyString::MyString(const MyString& other) : m_size(0) {
     if (other.m_userString == nullptr) {
         std::cout << "\nNullptr\n" << std::endl;
+        clearString();
     } else {
         copyString(other.m_userString);
     }

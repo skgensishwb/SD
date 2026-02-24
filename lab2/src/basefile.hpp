@@ -43,3 +43,22 @@ class Base32File : public BaseFile {
 
         ~Base32File();
 };
+
+class RleFile : public BaseFile {
+    protected:
+        unsigned char m_pendingCount; // сколько байт осталось от текущей серии
+        char m_pendingByte;           // какой байт повторяется
+    
+    protected:
+        int encodeRLE(const char *rawData, int rawSize, char** dst, int* dstSize);
+        int decodeRLE(const char *encodedData, int encodedSize, char** dst, int* dstSize);
+
+    public:
+        size_t read(void *buf, size_t maxBytes);
+        size_t write(const void *buf, size_t nBytes);
+
+        RleFile();
+        RleFile(const char* filePath, const char* mode);
+
+        ~RleFile();
+};
