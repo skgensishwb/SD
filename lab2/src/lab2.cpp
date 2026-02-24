@@ -332,6 +332,25 @@ int main() {
      * инициализации и деинициализации этих классов.
      */
 
+    {
+        std::cout << "===== Base32File =====" << std::endl;
+        {
+            std::cout << "-- Создаём Base32File --" << std::endl;
+            Base32File f("test_b32.bin", "wb");
+            std::cout << "-- Выходим из блока, вызывается деструктор --" << std::endl;
+        }
+
+        std::cout << "\n===== RleFile =====" << std::endl;
+        {
+            std::cout << "-- Создаём RleFile --" << std::endl;
+            RleFile f("test_rle.bin", "wb");
+            std::cout << "-- Выходим из блока, вызывается деструктор --" << std::endl;
+        }
+
+        remove("test_b32.bin");
+        remove("test_rle.bin");
+    }
+
     /**
      * Задание 2.4. Ранее связывание.
      *
