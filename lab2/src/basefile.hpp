@@ -25,19 +25,25 @@ class BaseFile {
 
 class Base32File : public BaseFile {
     protected:
+        unsigned int m_writeBuf;
+        int m_writeBits;
+
+        unsigned int m_readBuf;
+        int m_readBits;
+
         char m_table[33];
+        int m_decodingTable[256];
 
     protected:
         int encoded32Size(int rawSize);
         int decoded32Size(int encodeSize);
-        int encode32(const char *rawData, int rawSize, MyString* dst);
-        int decode32(const char *encodedData, int encodedSize, MyString* dst);
+        void buildDecodingTable();
 
     public:
         size_t write(const void *buf, size_t nBytes);
         size_t read(void *buf, size_t maxBytes);
 
-        Base32File();
+        Base32File(); //
         Base32File(const char* filePath, const char* mode);
         Base32File(const char* filePath, const char* mode, const char* table);
 
