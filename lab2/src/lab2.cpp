@@ -120,60 +120,60 @@ int main() {
      * Проверьте работу этого класса.
      */
 
-     std::cout << "===== Задание 2.1: BaseFile =====" << std::endl;
+    cout << "===== Задание 2.1: BaseFile =====" << endl;
 
     // Конструктор по умолчанию
-    std::cout << "\n--- Конструктор по умолчанию ---" << std::endl;
+    cout << "\n--- Конструктор по умолчанию ---" << endl;
     {
         BaseFile f;
-        std::cout << "isOpen: " << f.isOpen() << std::endl; // 0
+        cout << "isOpen: " << f.isOpen() << endl; // 0
     }
 
     // Конструктор с путём и режимом
-    std::cout << "\n--- Конструктор с параметрами ---" << std::endl;
+    cout << "\n--- Конструктор с параметрами ---" << endl;
     {
         BaseFile f("test.bin", "wb");
-        std::cout << "isOpen: " << f.isOpen() << std::endl;   // 1
-        std::cout << "canWrite: " << f.canWrite() << std::endl; // 1
+        cout << "isOpen: " << f.isOpen() << endl;   // 1
+        cout << "canWrite: " << f.canWrite() << endl; // 1
     } // деструктор закрывает файл
 
     // Конструктор с FILE*
-    std::cout << "\n--- Конструктор с FILE* ---" << std::endl;
+    cout << "\n--- Конструктор с FILE* ---" << endl;
     {
         FILE* fp = fopen("test.bin", "rb");
         BaseFile f(fp);
-        std::cout << "isOpen: " << f.isOpen() << std::endl; // 1
+        cout << "isOpen: " << f.isOpen() << endl; // 1
     } // деструктор закрывает файл
 
     // Последовательная запись (writeRaw) и чтение (readRaw)
-    std::cout << "\n--- writeRaw / readRaw ---" << std::endl;
+    cout << "\n--- writeRaw / readRaw ---" << endl;
     {
         BaseFile writer("test.bin", "wb");
         writer.writeRaw("Hello, ", 7);
         writer.writeRaw("World!", 6);
-        std::cout << "tell после записи: " << writer.tell() << std::endl; // 13
+        cout << "tell после записи: " << writer.tell() << endl; // 13
     }
     {
         BaseFile reader("test.bin", "rb");
         char buf[20] = {};
         reader.readRaw(buf, 7);       // "Hello, "
         reader.readRaw(buf + 7, 6);   // "World!"
-        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "Hello, World!"
+        cout << "Прочитано: \"" << buf << "\"" << endl; // "Hello, World!"
     }
 
     // seek и tell
-    std::cout << "\n--- seek / tell ---" << std::endl;
+    cout << "\n--- seek / tell ---" << endl;
     {
         BaseFile f("test.bin", "rb");
         f.seek(7);
-        std::cout << "tell после seek(7): " << f.tell() << std::endl; // 7
+        cout << "tell после seek(7): " << f.tell() << endl; // 7
         char buf[7] = {};
         f.readRaw(buf, 6);
-        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "World!"
+        cout << "Прочитано: \"" << buf << "\"" << endl; // "World!"
     }
 
     // read и write (обёртки над readRaw/writeRaw)
-    std::cout << "\n--- read / write ---" << std::endl;
+    cout << "\n--- read / write ---" << endl;
     {
         BaseFile writer("test2.bin", "wb");
         writer.write("Test", 4);
@@ -182,7 +182,7 @@ int main() {
         BaseFile reader("test2.bin", "rb");
         char buf[5] = {};
         reader.read(buf, 4);
-        std::cout << "Прочитано: \"" << buf << "\"" << std::endl; // "Test"
+        cout << "Прочитано: \"" << buf << "\"" << endl; // "Test"
     }
 
     remove("test.bin");
@@ -235,10 +235,10 @@ int main() {
      * кодировки, по умолчанию используется таблица "A..Z1..6".
      */
 
-    std::cout << "\n\n===== Задание 2.2.1: Base32File =====" << std::endl;
+    cout << "\n\n===== Задание 2.2.1: Base32File =====" << endl;
 
     // Запись и чтение с таблицей по умолчанию (A..Z1..6)
-    std::cout << "\n--- Таблица по умолчанию ---" << std::endl;
+    cout << "\n--- Таблица по умолчанию ---" << endl;
     {
         Base32File writer("b32.bin", "wb");
         writer.write("Hello", 5);
@@ -248,7 +248,7 @@ int main() {
         char buf[10] = {};
         size_t r = reader.read(buf, 5);
         buf[r] = '\0';
-        std::cout << "Декодировано: \"" << buf << "\"" << std::endl; // "Hello"
+        cout << "Декодировано: \"" << buf << "\"" << endl; // "Hello"
     }
 
     // Последовательная запись и чтение
@@ -263,8 +263,8 @@ int main() {
         char buf1[10] = {}, buf2[10] = {};
         reader.read(buf1, 2); buf1[2] = '\0';
         reader.read(buf2, 2); buf2[2] = '\0';
-        std::cout << "Часть 1: \"" << buf1 << "\"" << std::endl; // "AB"
-        std::cout << "Часть 2: \"" << buf2 << "\"" << std::endl; // "CD"
+        cout << "Часть 1: \"" << buf1 << "\"" << endl; // "AB"
+        cout << "Часть 2: \"" << buf2 << "\"" << endl; // "CD"
     }
 
     // Пользовательская таблица
@@ -279,22 +279,22 @@ int main() {
         char buf[10] = {};
         size_t r = reader.read(buf, 5);
         buf[r] = '\0';
-        std::cout << "Декодировано: \"" << buf << "\"" << std::endl; // "Hello"
+        cout << "Декодировано: \"" << buf << "\"" << endl; // "Hello"
     }
 
-    // Сравнение: одни и те же данные, разные таблицы — разный результат в файле
-    std::cout << "\n--- Сравнение закодированных данных ---" << std::endl;
+    // Сравнение: одни и те же данные, разные таблицы - разный результат в файле
+    std::cout << "\n--- Сравнение закодированных данных ---" << endl;
     {
         BaseFile f1("b32.bin", "rb");
         char raw1[20] = {};
         f1.readRaw(raw1, 19);
-        std::cout << "Таблица A..Z1..6:       \"" << raw1 << "\"" << std::endl;
+        cout << "Таблица A..Z1..6:       \"" << raw1 << "\"" << endl;
     }
     {
         BaseFile f2("b32custom.bin", "rb");
         char raw2[20] = {};
         f2.readRaw(raw2, 19);
-        std::cout << "Таблица 0..9a..v:       \"" << raw2 << "\"" << std::endl;
+        cout << "Таблица 0..9a..v:       \"" << raw2 << "\"" << endl;
     }
 
     remove("b32.bin");
@@ -333,18 +333,18 @@ int main() {
      */
 
     {
-        std::cout << "===== Base32File =====" << std::endl;
+        cout << "===== Base32File =====" << endl;
         {
-            std::cout << "-- Создаём Base32File --" << std::endl;
+            cout << "-Создаём Base32File" << endl;
             Base32File f("test_b32.bin", "wb");
-            std::cout << "-- Выходим из блока, вызывается деструктор --" << std::endl;
+            cout << "-Выходим из блока, вызывается деструктор" << endl;
         }
 
-        std::cout << "\n===== RleFile =====" << std::endl;
+        cout << "\n===== RleFile =====" << endl;
         {
-            std::cout << "-- Создаём RleFile --" << std::endl;
+            cout << "- Создаём RleFile" << endl;
             RleFile f("test_rle.bin", "wb");
-            std::cout << "-- Выходим из блока, вызывается деструктор --" << std::endl;
+            cout << "-Выходим из блока, вызывается деструктор" << endl;
         }
 
         remove("test_b32.bin");
@@ -365,62 +365,62 @@ int main() {
         char str[32];
         int len = intToStr(number, str, 31);
 
-        std::cout << "Число: " << number << ", строка: \"" << str << "\"" << std::endl;
+        cout << "Число: " << number << ", строка: \"" << str << "\"" << endl;
 
-        // Запись — один и тот же код, только имя объекта меняется
+        // Запись - один и тот же код, только имя объекта меняется
         {
             BaseFile bf("num_base.bin", "wb");
-            bf.write(str, len);                    // BaseFile::write
+            bf.write(str, len); // BaseFile::write
         }
         {
             Base32File b32f("num_b32.bin", "wb");
-            b32f.write(str, len);                  // Base32File::write
+            b32f.write(str, len); // Base32File::write
         }
         {
             RleFile rf("num_rle.bin", "wb");
-            rf.write(str, len);                    // RleFile::write
+            rf.write(str, len); // RleFile::write
         }
 
         // Что лежит в файлах (raw)
-        std::cout << "\n--- Raw содержимое файлов ---" << std::endl;
+        cout << "\n--- Raw содержимое файлов ---" << endl;
         {
             BaseFile f("num_base.bin", "rb");
             char buf[64] = {};
             size_t n = f.readRaw(buf, 63);
             buf[n] = '\0';
-            std::cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << std::endl;
+            cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << endl;
         }
         {
             BaseFile f("num_b32.bin", "rb");
             char buf[64] = {};
             size_t n = f.readRaw(buf, 63);
             buf[n] = '\0';
-            std::cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << std::endl;
+            cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << endl;
         }
-        std::cout << "RleFile:    " << fileSize("num_rle.bin") << " байт (бинарные)" << std::endl;
+        cout << "RleFile:    " << fileSize("num_rle.bin") << " байт (бинарные)" << endl;
 
         // Чтение обратно через соответствующие классы
-        std::cout << "\n--- Декодированное ---" << std::endl;
+        cout << "\n--- Декодированное ---" << endl;
         {
             BaseFile f("num_base.bin", "rb");
             char buf[32] = {};
-            size_t n = f.read(buf, len);           // BaseFile::read
+            size_t n = f.read(buf, len); // BaseFile::read
             buf[n] = '\0';
-            std::cout << "BaseFile:   \"" << buf << "\"" << std::endl;
+            cout << "BaseFile:   \"" << buf << "\"" << endl;
         }
         {
             Base32File f("num_b32.bin", "rb");
             char buf[32] = {};
-            size_t n = f.read(buf, len);           // Base32File::read
+            size_t n = f.read(buf, len); // Base32File::read
             buf[n] = '\0';
-            std::cout << "Base32File: \"" << buf << "\"" << std::endl;
+            cout << "Base32File: \"" << buf << "\"" << endl;
         }
         {
             RleFile f("num_rle.bin", "rb");
             char buf[32] = {};
-            size_t n = f.read(buf, len);           // RleFile::read
+            size_t n = f.read(buf, len); // RleFile::read
             buf[n] = '\0';
-            std::cout << "RleFile:    \"" << buf << "\"" << std::endl;
+            cout << "RleFile:    \"" << buf << "\"" << endl;
         }
 
         remove("num_base.bin");
@@ -471,27 +471,27 @@ int main() {
         }
 
         // Проверяем что записалось
-        std::cout << "\n--- Что лежит в файлах (raw) ---" << std::endl;
+        cout << "\n--- Что лежит в файлах (raw) ---" << endl;
         {
             BaseFile f1("num_base.bin", "rb");
             char buf[64] = {};
             size_t n = f1.readRaw(buf, 63);
             buf[n] = '\0';
-            std::cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << std::endl;
+            cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << endl;
         }
         {
             BaseFile f2("num_b32.bin", "rb");
             char buf[64] = {};
             size_t n = f2.readRaw(buf, 63);
             buf[n] = '\0';
-            std::cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << std::endl;
+            cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << endl;
         }
         {
             BaseFile f3("num_rle.bin", "rb");
             char buf[64] = {};
             size_t n = f3.readRaw(buf, 63);
             buf[n] = '\0';
-            std::cout << "RleFile:    \"" << buf << "\" (" << fileSize("num_rle.bin") << " байт)" << std::endl;
+            cout << "RleFile:    \"" << buf << "\" (" << fileSize("num_rle.bin") << " байт)" << endl;
         }
 
         remove("num_base.bin");
@@ -536,13 +536,11 @@ int main() {
 
         /*
         * Почему размер увеличился?
-        *
         * Когда в классе появляется хотя бы одна virtual-функция,
         * компилятор добавляет в каждый объект скрытый указатель vptr
         * (virtual table pointer). Этот указатель ссылается на таблицу
         * виртуальных функций (vtable), где для каждого класса записаны
         * адреса его версий виртуальных методов.
-        *
         * На 64-битной системе указатель = 8 байт, поэтому все классы
         * выросли ровно на 8.
         */
@@ -555,8 +553,8 @@ int main() {
             Base32File b32f("num_b32.bin", "wb");
             RleFile rf("num_rle.bin", "wb");
 
-            // Та же самая функция writeInt, тот же код.
-            // Но теперь write() — virtual, и вызывается нужная версия!
+            // Та же самая функция writeInt, тот же код
+            // Но теперь write() - virtual и вызывается нужная версия
             writeInt(bf, number);
             writeInt(b32f, number);
             writeInt(rf, number);
@@ -606,27 +604,26 @@ int main() {
         remove("num_rle.bin");
 
         /*
-        * Теперь writeInt работает правильно для ВСЕХ классов!
+        * Теперь writeInt работает правильно для всех классов
         *
-        * BaseFile   → "123456" (как есть)
-        * Base32File → "GEZDGNBVGY" (закодировано base32)
-        * RleFile    → бинарные RLE-пары (сжато)
+        * BaseFile -> "123456" (как есть)
+        * Base32File -> "GEZDGNBVGY" (закодировано base32)
+        * RleFile -> бинарные RLE-пары (сжато)
         *
-        * Что изменилось?
-        *
+        * Изменения:
         * В задании 2.5 (без virtual) writeInt вызывал BaseFile::write()
         * для всех объектов, потому что компилятор видел тип BaseFile&
-        * и принимал решение на этапе компиляции (раннее связывание).
+        * и принимал решение на этапе компиляции (раннее связывание)
         *
-        * Теперь write() — virtual. При вызове file.write(...) программа
-        * смотрит в vptr объекта → находит vtable конкретного класса →
+        * Теперь write() - virtual. При вызове file.write(...) программа
+        * смотрит в vptr объекта -> находит vtable конкретного класса ->
         * вызывает правильную версию write(). Решение принимается
-        * во время ВЫПОЛНЕНИЯ по реальному типу объекта.
-        * Это и есть позднее (динамическое) связывание.
+        * во время выполнения по реальному типу объекта
+        * Это и есть позднее (динамическое) связывание
         *
-        * Также деструктор сделан virtual — это необходимо, чтобы при
+        * Также деструктор сделан virtual - это необходимо, чтобы при
         * удалении объекта через указатель на BaseFile* вызывался
-        * правильный деструктор производного класса.
+        * правильный деструктор производного класса
         */
     }
 
@@ -641,7 +638,7 @@ int main() {
      * Исправьте эту ситуацию.
      */
 
-    // Массив указателей на базовый класс, но объекты — разных типов
+    // Массив указателей на базовый класс, но объекты - разных типов
     {
         BaseFile *files[] = {
             new BaseFile("vd_base.bin", "wb"),
@@ -649,13 +646,13 @@ int main() {
             new Base32File("vd_b32.bin", "wb"),
         };
 
-        // Благодаря virtual write() — каждый объект пишет по-своему
+        // Благодаря virtual write() - каждый объект пишет по-своему
         for (int i = 0; i < 3; ++i) {
             files[i]->write("Hello!", 6);
         }
 
         // Удаление динамической памяти
-        std::cout << "\n--- Удаление объектов ---" << std::endl;
+        cout << "\n--- Удаление объектов ---" << endl;
         for (int i = 0; i < 3; ++i) {
             delete files[i];
         }
@@ -668,23 +665,21 @@ int main() {
     /*
      * Деструктор BaseFile объявлен как virtual, поэтому при delete files[i]
      * вызывается правильный деструктор:
+     * delete files[0] -> ~BaseFile()
+     * delete files[1] -> ~RleFile(), затем ~BaseFile()
+     * delete files[2] -> ~Base32File(), затем ~BaseFile()
      *
-     *   delete files[0]  →  ~BaseFile()
-     *   delete files[1]  →  ~RleFile()  затем ~BaseFile()
-     *   delete files[2]  →  ~Base32File() затем ~BaseFile()
-     *
-     * Если бы деструктор НЕ был virtual, то при delete через BaseFile*
+     * Если бы деструктор не был virtual, то при delete через BaseFile*
      * всегда вызывался бы только ~BaseFile(). Деструкторы производных
-     * классов (~RleFile, ~Base32File) НЕ вызывались бы.
+     * классов не вызывались бы.
      *
-     * К каким проблемам это может привести?
-     *
+     * Проблемы:
      * Если производный класс владеет дополнительными ресурсами
-     * (динамическая память, файлы, сокеты и т.д.), то без вызова
-     * его деструктора эти ресурсы не будут освобождены — произойдёт
+     * (динамическая память, файлы и т.д.), то без вызова
+     * его деструктора эти ресурсы не будут освобождены - произойдёт
      * утечка памяти или ресурсов. Кроме того, это undefined behavior
      * по стандарту C++: удаление объекта производного класса через
-     * указатель на базовый класс с невиртуальным деструктором —
+     * указатель на базовый класс с невиртуальным деструктором -
      * неопределённое поведение.
      *
      * Правило: если в классе есть хотя бы одна виртуальная функция,
@@ -704,16 +699,79 @@ int main() {
      * логику, используя массив указателей на объекты базового класса.
      */
 
-    /* {
-        BaseFile *base_files = new BaseFile[2] { BaseFile(...), BaseFile(...) };
-        BaseFile *b32_files = new Base32File[2] { Base32File(...), Base32File(...) };
-        for (int i = 0; i < 2; ++i) {
-            base_files[i].write("Hello!", 6);
-            b32_files[i].write("Hello!", 6);
+    {
+        cout << "--- Проблемный вариант (массив объектов) ---" << endl;
+        {
+            // Это работает нормально - массив BaseFile, объекты BaseFile
+            BaseFile *base_files = new BaseFile[2] {
+                BaseFile("arr_base0.bin", "wb"),
+                BaseFile("arr_base1.bin", "wb")
+            };
+
+            // Это проблема: массив Base32File, но указатель - BaseFile*
+            BaseFile *b32_files = new Base32File[2] {
+                Base32File("arr_b32_0.bin", "wb"),
+                Base32File("arr_b32_1.bin", "wb")
+            };
+
+            // base_files[0] и [1] - работает корректно
+            base_files[0].write("Hello!", 6);
+            base_files[1].write("Hello!", 6);
+
+            // b32_files[0] - работает (это начало массива, адрес совпадает)
+            b32_files[0].write("Hello!", 6);
+
+            // b32_files[1] - ошибка выполнения
+            // Компилятор считает что b32_files[1] находится по адресу:
+            // b32_files + 1 * sizeof(BaseFile) = b32_files + 32 байта
+            // Но реально второй Base32File находится по адресу:
+            // b32_files + 1 * sizeof(Base32File) = b32_files + 72 байта
+            // Мы попадаем в середину первого объекта Base32File
+
+            // Краш:
+            // b32_files[1].write("Hello!", 6);
+
+            delete [] base_files;
+            // delete [] b32_files тоже может привести к крашу
+
+            remove("arr_base0.bin");
+            remove("arr_base1.bin");
+            remove("arr_b32_0.bin");
+            remove("arr_b32_1.bin");
         }
-        delete [] base_files;
-        delete [] b32_files;
-    } */
+
+        // Показываем почему - разница в размерах
+        cout << "\nsizeof(BaseFile):   " << sizeof(BaseFile) << " байт" << endl;
+        cout << "sizeof(Base32File): " << sizeof(Base32File) << " байт" << endl;
+        cout << "\nПри обращении к b32_files[1] компилятор прыгает на +"
+                << sizeof(BaseFile) << " байт от начала," << endl;
+        cout << "а реальный второй объект лежит на +"
+                << sizeof(Base32File) << " байт." << endl;
+        cout << "Разница: " << sizeof(Base32File) - sizeof(BaseFile)
+                << " байт - попадаем в середину первого объекта\n" << endl;
+
+        // --- Правильный вариант (массив указателей) ---
+
+        cout << "--- Правильный вариант (массив указателей) ---" << endl;
+        {
+            BaseFile *files[] = {
+                new Base32File("ptr_b32_0.bin", "wb"),
+                new Base32File("ptr_b32_1.bin", "wb"),
+            };
+
+            for (int i = 0; i < 2; ++i) {
+                files[i]->write("Hello!", 6);  // виртуальный вызов, всё корректно
+            }
+
+            // Правильное удаление - virtual деструктор гарантирует корректность
+            for (int i = 0; i < 2; ++i) {
+                delete files[i];
+            }
+
+            remove("ptr_b32_0.bin");
+            remove("ptr_b32_1.bin");
+        }
+    }   
 
     /**
      * Задание 3. Чисто виртуальные функции. Интерфейсы. Композиция классов.
