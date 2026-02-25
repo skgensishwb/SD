@@ -528,6 +528,108 @@ int main() {
      * классов? Почему?
      */
 
+    {
+        cout << "--- Размеры объектов (с virtual) ---" << endl;
+        cout << "sizeof(BaseFile):   " << sizeof(BaseFile) << " байт" << endl;
+        cout << "sizeof(Base32File): " << sizeof(Base32File) << " байт" << endl;
+        cout << "sizeof(RleFile):    " << sizeof(RleFile) << " байт" << endl;
+
+        /*
+        * Почему размер увеличился?
+        *
+        * Когда в классе появляется хотя бы одна virtual-функция,
+        * компилятор добавляет в каждый объект скрытый указатель vptr
+        * (virtual table pointer). Этот указатель ссылается на таблицу
+        * виртуальных функций (vtable), где для каждого класса записаны
+        * адреса его версий виртуальных методов.
+        *
+        * На 64-битной системе указатель = 8 байт, поэтому все классы
+        * выросли ровно на 8.
+        */
+
+        // --- Проверяем writeInt с virtual ---
+        int number = 123456;
+
+        {
+            BaseFile bf("num_base.bin", "wb");
+            Base32File b32f("num_b32.bin", "wb");
+            RleFile rf("num_rle.bin", "wb");
+
+            // Та же самая функция writeInt, тот же код.
+            // Но теперь write() — virtual, и вызывается нужная версия!
+            writeInt(bf, number);
+            writeInt(b32f, number);
+            writeInt(rf, number);
+        }
+
+        std::cout << "\n--- Содержимое файлов (raw) ---" << std::endl;
+        {
+            BaseFile f("num_base.bin", "rb");
+            char buf[64] = {};
+            f.readRaw(buf, 63);
+            cout << "BaseFile:   \"" << buf << "\" (" << fileSize("num_base.bin") << " байт)" << endl;
+        }
+        {
+            BaseFile f("num_b32.bin", "rb");
+            char buf[64] = {};
+            f.readRaw(buf, 63);
+            cout << "Base32File: \"" << buf << "\" (" << fileSize("num_b32.bin") << " байт)" << endl;
+        }
+        cout << "RleFile:    " << fileSize("num_rle.bin") << " байт (бинарные)" << endl;
+
+        // Читаем обратно через соответствующие классы
+        cout << "\n--- Декодированное ---" << endl;
+        {
+            BaseFile f("num_base.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, 6);
+            buf[n] = '\0';
+            cout << "BaseFile:   \"" << buf << "\"" << endl;
+        }
+        {
+            Base32File f("num_b32.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, 6);
+            buf[n] = '\0';
+            cout << "Base32File: \"" << buf << "\"" << endl;
+        }
+        {
+            RleFile f("num_rle.bin", "rb");
+            char buf[32] = {};
+            size_t n = f.read(buf, 6);
+            buf[n] = '\0';
+            cout << "RleFile:    \"" << buf << "\"" << endl;
+        }
+
+        remove("num_base.bin");
+        remove("num_b32.bin");
+        remove("num_rle.bin");
+
+        /*
+        * Теперь writeInt работает правильно для ВСЕХ классов!
+        *
+        * BaseFile   → "123456" (как есть)
+        * Base32File → "GEZDGNBVGY" (закодировано base32)
+        * RleFile    → бинарные RLE-пары (сжато)
+        *
+        * Что изменилось?
+        *
+        * В задании 2.5 (без virtual) writeInt вызывал BaseFile::write()
+        * для всех объектов, потому что компилятор видел тип BaseFile&
+        * и принимал решение на этапе компиляции (раннее связывание).
+        *
+        * Теперь write() — virtual. При вызове file.write(...) программа
+        * смотрит в vptr объекта → находит vtable конкретного класса →
+        * вызывает правильную версию write(). Решение принимается
+        * во время ВЫПОЛНЕНИЯ по реальному типу объекта.
+        * Это и есть позднее (динамическое) связывание.
+        *
+        * Также деструктор сделан virtual — это необходимо, чтобы при
+        * удалении объекта через указатель на BaseFile* вызывался
+        * правильный деструктор производного класса.
+        */
+    }
+
     /**
      * Задание 2.7. Виртуальный деструктор.
      *
@@ -539,17 +641,55 @@ int main() {
      * Исправьте эту ситуацию.
      */
 
-    /* {
-        BaseFile *files[] = { 
-            new BaseFile(...), 
-            new RleFile(...), 
-            new Base32File(...), 
+    // Массив указателей на базовый класс, но объекты — разных типов
+    {
+        BaseFile *files[] = {
+            new BaseFile("vd_base.bin", "wb"),
+            new RleFile("vd_rle.bin", "wb"),
+            new Base32File("vd_b32.bin", "wb"),
         };
 
+        // Благодаря virtual write() — каждый объект пишет по-своему
         for (int i = 0; i < 3; ++i) {
             files[i]->write("Hello!", 6);
         }
-    } */
+
+        // Удаление динамической памяти
+        std::cout << "\n--- Удаление объектов ---" << std::endl;
+        for (int i = 0; i < 3; ++i) {
+            delete files[i];
+        }
+    }
+
+    remove("vd_base.bin");
+    remove("vd_rle.bin");
+    remove("vd_b32.bin");
+
+    /*
+     * Деструктор BaseFile объявлен как virtual, поэтому при delete files[i]
+     * вызывается правильный деструктор:
+     *
+     *   delete files[0]  →  ~BaseFile()
+     *   delete files[1]  →  ~RleFile()  затем ~BaseFile()
+     *   delete files[2]  →  ~Base32File() затем ~BaseFile()
+     *
+     * Если бы деструктор НЕ был virtual, то при delete через BaseFile*
+     * всегда вызывался бы только ~BaseFile(). Деструкторы производных
+     * классов (~RleFile, ~Base32File) НЕ вызывались бы.
+     *
+     * К каким проблемам это может привести?
+     *
+     * Если производный класс владеет дополнительными ресурсами
+     * (динамическая память, файлы, сокеты и т.д.), то без вызова
+     * его деструктора эти ресурсы не будут освобождены — произойдёт
+     * утечка памяти или ресурсов. Кроме того, это undefined behavior
+     * по стандарту C++: удаление объекта производного класса через
+     * указатель на базовый класс с невиртуальным деструктором —
+     * неопределённое поведение.
+     *
+     * Правило: если в классе есть хотя бы одна виртуальная функция,
+     * деструктор тоже должен быть виртуальным.
+     */
 
     /**
      * Задание 2.8. Массив объектов производных классов.
